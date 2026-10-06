@@ -19,6 +19,4 @@ data/processed/*
 
 # 自动生成的分析结果
 reports/*.csv
-reports/figures/*
-!reports/figures/.gitkeep
 

@@ -67,3 +67,33 @@ python src/inspect_dataset.py
 
 对于Parquet文件，盘点脚本只读取文件元数据，不会把全部交易记录载入内存。
 
+## 初始可视化
+
+运行：
+
+```powershell
+python src/create_visualizations.py
+```
+
+脚本会在 `reports/figures/` 生成5张探索性图表。原始Parquet文件只会被读取，不会被修改。
+
+### 月度充电规模
+
+![Monthly overview](reports/figures/01-monthly-overview.png)
+
+### 每日分时充电电量
+
+![Hourly energy profile](reports/figures/02-hourly-energy-profile.png)
+
+### 站点场景订单构成
+
+![Site session share](reports/figures/03-site-session-share.png)
+
+### 单次充电电量分布
+
+![Session energy distribution](reports/figures/04-session-energy-distribution.png)
+
+### 充电枪月利用率分布
+
+![Utilization distribution](reports/figures/05-utilization-distribution.png)
+
