@@ -5,6 +5,9 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 
+# 作者随数据集提供的参考Notebook保留在本地，不作为本项目代码提交
+notebooks/code.ipynb
+
 # 数据集论文和其他本地参考资料通过 DOI 引用，不放入代码仓库
 *.pdf
 
