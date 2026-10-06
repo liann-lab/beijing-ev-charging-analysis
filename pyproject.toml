@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "beijing-ev-charging-analysis"
+version = "0.1.0"
+description = "Exploratory analysis of Beijing public EV charging transactions and infrastructure"
+requires-python = ">=3.11"
+dependencies = [
+  "jupyterlab>=4.2",
+  "matplotlib>=3.9",
+  "pandas>=2.2",
+  "pyarrow>=17",
+  "seaborn>=0.13",
+]
+
+[tool.setuptools]
+py-modules = []
+

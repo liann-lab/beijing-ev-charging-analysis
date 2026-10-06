@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.ruff_cache/
+
+# 数据集论文和其他本地参考资料通过 DOI 引用，不放入代码仓库
+*.pdf
+
+# 原始和处理中间数据通常体积较大
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# 自动生成的分析结果
+reports/*.csv
+reports/figures/*
+!reports/figures/.gitkeep
+
