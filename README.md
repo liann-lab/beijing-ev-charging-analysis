@@ -82,6 +82,20 @@ python src/inspect_dataset.py
 
 ## 初始可视化图表
 
+清洗后图表运行 `python src/create_clean_visualizations.py`，默认选择最新已完成的清洗目录。新图保存到 `reports/figures/cleaned/`，原有图表保留。口径及数值对照见 [清洗图表说明](reports/cleaned_chart_review.md)。
+
+![Cleaned monthly overview](reports/figures/cleaned/01-monthly-overview.png)
+
+![Cleaned hourly energy](reports/figures/cleaned/02-hourly-energy-profile.png)
+
+![Cleaned site share](reports/figures/cleaned/03-site-session-share.png)
+
+![Cleaned session energy distribution](reports/figures/cleaned/04-session-energy-distribution.png)
+
+![Monthly utilization retained](reports/figures/cleaned/05-utilization-distribution.png)
+
+以下为原始数据版本：
+
 异常核查结果见 [异常复核报告](reports/anomaly_review.md)。运行 `python src/audit_anomalies.py` 可重新生成详细核查结果。当前电量图仍包含原始异常值，待生成清洗前后对照。
 
 运行：
