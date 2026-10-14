@@ -67,7 +67,20 @@ python src/inspect_dataset.py
 
 对于Parquet文件，盘点脚本只读取文件元数据，不会把全部交易记录载入内存。
 
-## 初始可视化
+## 第一版清洗数据
+
+运行 `python src/clean_dataset.py`。脚本在 `data/processed/clean_v1_<运行时间>/` 创建新的输出目录，原始文件保持不变。
+
+- `orders_2025-01_clean.parquet`、`orders_2025-07_clean.parquet`：保留订单，统一住宅场景名称，增加原文件名、零起始原行号、开始日期和异常标记。
+- `orders_2025-01_excluded.parquet`、`orders_2025-07_excluded.parquet`：隔离电量超过1,000 kWh且超过记录功率×时长105%的记录。隔离是首轮分析规则，并不推断错误产生原因。
+- `stations_monthly_clean.parquet`：统一场景名称；月度电量和利用率仍为上游原始汇总，不能当作清洗订单重算后的指标。
+- `cleaning_manifest.json`：成功完成后的清单、行数、电量和源文件SHA-256。只有包含此文件的目录才视为完成；`failed_`目录不用于分析。
+
+跨月会话、高功率、设备缺失及其他容量可疑记录保留并标记，不做无依据插补或去重。时序分析使用 `analysis_date`，同时保留 `file_month` 和 `analysis_month` 以识别文件月份与开始月份的区别。原始 `dating_time` 保留待核实。
+
+清洗结果保存在本地，不推送数据文件。清洗报告清单保存在 `reports/cleaning_v1_<运行时间>.json`。现有绘图脚本仍读取原始数据，尚未切换到清洗版本。
+
+## 初始可视化图表
 
 异常核查结果见 [异常复核报告](reports/anomaly_review.md)。运行 `python src/audit_anomalies.py` 可重新生成详细核查结果。当前电量图仍包含原始异常值，待生成清洗前后对照。
 

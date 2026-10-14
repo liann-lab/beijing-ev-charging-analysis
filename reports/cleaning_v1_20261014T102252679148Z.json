@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "run_id": "20261014T102252679148Z",
+  "output_directory": "D:\\university\\second\\创新实践1\\data\\processed\\clean_v1_20261014T102252679148Z",
+  "orders": {
+    "2025-01": {
+      "source_file": "orders_2025-01_public.parquet",
+      "source_sha256": "3518ab3b0c48a3241538a38ddad8399fd52676ff3ceb1c230cc52f578d7fd6db",
+      "counts": {
+        "site_names_normalized": 135744,
+        "flag_missing_equipment_or_power": 1179,
+        "flag_energy_over_200": 834,
+        "flag_power_over_500": 140964,
+        "flag_energy_capacity_mismatch": 10825,
+        "flag_cross_month_start": 0,
+        "flag_cross_month_end": 5665,
+        "flag_dating_month_mismatch": 142892,
+        "input_rows": 2137234,
+        "excluded_rows": 20,
+        "clean_rows": 2137214
+      },
+      "energy": {
+        "raw_energy_kwh": 61897492.41629999,
+        "excluded_energy_kwh": 1912615.1299999997,
+        "clean_energy_kwh": 59984877.28629999
+      }
+    },
+    "2025-07": {
+      "source_file": "orders_2025-07_public.parquet",
+      "source_sha256": "821ffdd0c410ccf23454f3438954972e9aade80e55fc1b4da0c510994d6bf555",
+      "counts": {
+        "site_names_normalized": 0,
+        "flag_missing_equipment_or_power": 0,
+        "flag_energy_over_200": 6127,
+        "flag_power_over_500": 732828,
+        "flag_energy_capacity_mismatch": 38280,
+        "flag_cross_month_start": 13493,
+        "flag_cross_month_end": 0,
+        "flag_dating_month_mismatch": 0,
+        "input_rows": 6407461,
+        "excluded_rows": 0,
+        "clean_rows": 6407461
+      },
+      "energy": {
+        "raw_energy_kwh": 175974584.03730002,
+        "excluded_energy_kwh": 0.0,
+        "clean_energy_kwh": 175974584.03730002
+      }
+    }
+  },
+  "stations": {
+    "source_sha256": "b0221dbcbd21f127aba54cdf1a27db51d2c22e6780c4fe32aa660dd35d4ca7b6",
+    "rows": 14307,
+    "site_names_normalized": 1039
+  }
+}
