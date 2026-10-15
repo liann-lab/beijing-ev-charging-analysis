@@ -80,7 +80,17 @@ python src/inspect_dataset.py
 
 清洗结果保存在本地，不推送数据文件。清洗报告清单保存在 `reports/cleaning_v1_<运行时间>.json`。现有绘图脚本仍读取原始数据，尚未切换到清洗版本。
 
-## 初始可视化图表
+## 匿名网格空间分布
+
+运行 `python src/create_spatial_visualizations.py`，从最新完成的清洗月表生成网格订单、电量和枪数加权利用率图。月份共用坐标与色标；详细汇总方法和空间离群点见 [空间图说明](reports/spatial_review.md)。月表电量仍为上游汇总，无法扣除没有网格关联键的异常订单。
+
+![Grid sessions](reports/figures/cleaned/spatial/01-grid-orders.png)
+
+![Grid energy](reports/figures/cleaned/spatial/02-grid-energy.png)
+
+![Grid utilization](reports/figures/cleaned/spatial/03-grid-utilization.png)
+
+## 基础图表（清洗后及原始版本）
 
 清洗后图表运行 `python src/create_clean_visualizations.py`，默认选择最新已完成的清洗目录。新图保存到 `reports/figures/cleaned/`，原有图表保留。口径及数值对照见 [清洗图表说明](reports/cleaned_chart_review.md)。
 

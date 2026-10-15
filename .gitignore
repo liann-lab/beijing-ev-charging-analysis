@@ -10,6 +10,8 @@ notebooks/code.ipynb
 
 # 数据集论文和其他本地参考资料通过 DOI 引用，不放入代码仓库
 *.pdf
+translations/
+tmp/
 
 # 原始和处理中间数据通常体积较大
 data/raw/*
