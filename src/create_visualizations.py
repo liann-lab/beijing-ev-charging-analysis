@@ -27,6 +27,8 @@ STATION_FILE = RAW_DIR / "stations_monthly_public.parquet"
 
 MONTH_LABELS = {"2025-01": "Jan 2025", "2025-07": "Jul 2025"}
 MONTH_COLORS = {"2025-01": "#4472C4", "2025-07": "#ED7D31"}
+MONTH_BASIS = "file"
+MONTH_ASSIGNMENT_AUDIT = []
 SITE_NAME_MAP = {
     "其他": "Other",
     "公共机构": "Public institutions",
@@ -71,11 +73,21 @@ def normalize_site(value: object) -> str:
     return SITE_NAME_MAP.get(text, text)
 
 
+def assign_order_month(data: pd.DataFrame, file_month: str, basis: str) -> pd.Series:
+    """Attribute the whole session to its start month; never split energy across months."""
+    if basis == 'start':
+        return data['charge_start_time'].dt.strftime('%Y-%m')
+    if basis == 'file':
+        return pd.Series(file_month, index=data.index)
+    raise ValueError(f'Unknown month basis: {basis}')
+
+
 def collect_order_summaries() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     monthly_rows: list[dict[str, float | str]] = []
     hourly_rows: list[dict[str, float | int | str]] = []
     site_rows: list[dict[str, float | str]] = []
     energy_samples: list[pd.DataFrame] = []
+    MONTH_ASSIGNMENT_AUDIT.clear()
 
     for month, path in ORDER_FILES.items():
         parquet_file = pq.ParquetFile(path)
@@ -85,12 +97,23 @@ def collect_order_summaries() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame,
         total_energy = 0.0
         sampled_parts: list[np.ndarray] = []
         random = np.random.default_rng(202501 if month == "2025-01" else 202507)
+        row_count = 0
 
         for batch in parquet_file.iter_batches(
             batch_size=250_000,
             columns=["charge_start_time", "total_elec_kwh", "construction_site"],
         ):
             data = batch.to_pandas()
+            assigned = assign_order_month(data, month, MONTH_BASIS)
+            audit = data.assign(assigned_month=assigned).groupby('assigned_month', dropna=False).agg(
+                sessions=('total_elec_kwh', 'size'), energy_kwh=('total_elec_kwh', 'sum'))
+            for assigned_month, values in audit.iterrows():
+                MONTH_ASSIGNMENT_AUDIT.append({'file_month': month, 'assigned_month': str(assigned_month),
+                                               'sessions': int(values.sessions), 'energy_kwh': float(values.energy_kwh)})
+            # Non-target starts remain in the clean files and the month-assignment audit.
+            # Only Jan/Jul are shown; June observations are not a complete June sample.
+            data = data.loc[assigned.eq(month)]
+            row_count += len(data)
             energy = data["total_elec_kwh"].to_numpy(dtype=float, copy=False)
             hours = data["charge_start_time"].dt.hour.to_numpy()
             valid = np.isfinite(energy)
@@ -106,7 +129,6 @@ def collect_order_summaries() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame,
                 sample_index = random.choice(len(valid_energy), size=sample_size, replace=False)
                 sampled_parts.append(valid_energy[sample_index])
 
-        row_count = parquet_file.metadata.num_rows
         monthly_rows.append(
             {
                 "month": month,

@@ -1,0 +1,24 @@
+{
+  "month_basis": "start",
+  "note": "Non-target months are partial observations, not complete monthly totals. Station-month aggregates unchanged.",
+  "rows": [
+    {
+      "file_month": "2025-01",
+      "assigned_month": "2025-01",
+      "sessions": 2136035,
+      "energy_kwh": 59951137.3983
+    },
+    {
+      "file_month": "2025-07",
+      "assigned_month": "2025-06",
+      "sessions": 13493,
+      "energy_kwh": 527105.5272
+    },
+    {
+      "file_month": "2025-07",
+      "assigned_month": "2025-07",
+      "sessions": 6393968,
+      "energy_kwh": 175447478.5101
+    }
+  ]
+}

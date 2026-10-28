@@ -25,6 +25,7 @@ def utilization_color_scale():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--metric', choices=['all', 'orders', 'energy_kwh', 'utilization'], default='all')
+    parser.add_argument('--output-dir', type=Path, help='Save a separate chart version without replacing existing figures')
     args = parser.parse_args()
     manifests = sorted((ROOT/'data/processed').glob('clean_v[12]_*/cleaning_manifest.json'),
                        key=lambda path: path.stat().st_mtime_ns)
@@ -50,7 +51,7 @@ def main():
     spatial_outlier = ((grid[['x','y']] < q1 - 10*(q3-q1)) | (grid[['x','y']] > q3 + 10*(q3-q1))).any(axis=1)
     offscreen = grid.loc[spatial_outlier]
     main_grid = grid.loc[~spatial_outlier]
-    output = ROOT/'reports/figures/cleaned/spatial'
+    output = args.output_dir.resolve() if args.output_dir else ROOT/'reports/figures/cleaned/spatial'
     output.mkdir(parents=True, exist_ok=True)
     plt.rcParams.update({'font.size': 10, 'axes.spines.top': False, 'axes.spines.right': False})
     specs = [('orders', 'Monthly sessions', '01-grid-orders.png', True),
@@ -89,7 +90,7 @@ def main():
         fig.colorbar(artist, ax=axes, shrink=0.75,
                      label=title + (' (log color scale)' if logarithmic else ' (shared bins)'),
                      **colorbar_options)
-        fig.suptitle(title + '\nCleaned station-month table; original aggregate values retained', fontsize=13)
+        fig.suptitle(title + '\nSource station-month aggregates; not reassigned by session start month', fontsize=13)
         footer = f'Anonymous relative coordinates. Blank = unobserved. Main cluster view; {len(offscreen)} remote grid-month record listed in report.'
         if not logarithmic:
             footer += '\nUnequal percentage intervals shown as equal-width color bands; identical bins for both months. No values clipped.'
@@ -112,7 +113,9 @@ def main():
 
 运行：`python src/create_spatial_visualizations.py`；只更新利用率图：`python src/create_spatial_visualizations.py --metric utilization`。
 '''
-    (ROOT/'reports/spatial_review.md').write_text(note, encoding='utf-8')
+    note += '\n站点月表无法按订单开始月重分配；这些空间图仍使用上游月表的月份，不与开始月订单图宣称为完全相同口径。\n'
+    note_path = output/'spatial_review.md' if args.output_dir else ROOT/'reports/spatial_review.md'
+    note_path.write_text(note, encoding='utf-8')
     print(grid.groupby('month').agg(grids=('grid_id', 'size'), orders=('orders','sum')).to_string())
     print(output)
 

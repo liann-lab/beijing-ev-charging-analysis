@@ -92,17 +92,19 @@ v2剔除设备类型或功率缺失的订单。跨月会话、高功率及其他
 
 ## 基础图表（清洗后及原始版本）
 
-清洗后图表运行 `python src/create_clean_visualizations.py`，默认选择最新已完成的清洗目录。v1图表在 `reports/figures/cleaned/`；v2图表保存到其下 `v2_<运行时间>/`，不覆盖旧版。以下嵌入图仍为v1，口径及数值对照见 [清洗图表说明](reports/cleaned_chart_review.md)。
+清洗后图表运行 `python src/create_clean_visualizations.py`，默认选择最新已完成的清洗目录，并按充电开始月归属整笔订单（跨月算前一个开始月份）。`--month-basis file` 可复现文件月份口径。v2新图保存到 `reports/figures/cleaned/v2_<运行时间>/month_start/`，原始及v1图保留。当前图表已剔除缺失字段及极端电量记录，口径见 [新版图表说明](reports/cleaned_chart_review_v2_20261028T013504762238Z_month_start.md) 和 [时间字段说明](reports/time_month_policy.md)。
 
-![Cleaned monthly overview](reports/figures/cleaned/01-monthly-overview.png)
+![Cleaned monthly overview](reports/figures/cleaned/v2_20261028T013504762238Z/month_start/01-monthly-overview.png)
 
-![Cleaned hourly energy](reports/figures/cleaned/02-hourly-energy-profile.png)
+![Cleaned hourly energy](reports/figures/cleaned/v2_20261028T013504762238Z/month_start/02-hourly-energy-profile.png)
 
-![Cleaned site share](reports/figures/cleaned/03-site-session-share.png)
+![Cleaned site share](reports/figures/cleaned/v2_20261028T013504762238Z/month_start/03-site-session-share.png)
 
-![Cleaned session energy distribution](reports/figures/cleaned/04-session-energy-distribution.png)
+![Cleaned session energy distribution](reports/figures/cleaned/v2_20261028T013504762238Z/month_start/04-session-energy-distribution.png)
 
-![Monthly utilization retained](reports/figures/cleaned/05-utilization-distribution.png)
+![Monthly utilization retained](reports/figures/cleaned/v2_20261028T013504762238Z/month_start/05-utilization-distribution.png)
+
+利用率分布及[同批次空间图](reports/figures/cleaned/v2_20261028T013504762238Z/month_start/spatial/spatial_review.md)仍来自上游站点月表，无法按订单开始月重归属，也无法扣除无关联键的剔除订单。不得把这组月表指标与订单图表称为完全相同的归月口径。
 
 以下为原始数据版本：
 
