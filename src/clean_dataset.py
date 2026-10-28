@@ -1,4 +1,5 @@
-"""Conservative cleaning v1: create new files, preserve sources and provenance."""
+"""Versioned cleaning: create new files, preserve sources and provenance."""
+import argparse
 from collections import Counter
 from datetime import datetime, timezone
 import hashlib
@@ -20,7 +21,20 @@ def sha256(path):
     return digest.hexdigest()
 
 
-def clean_orders(source, month, output):
+def exclusion_rules(data, version):
+    extreme = (data.total_elec_kwh > 1000) & data.flag_energy_capacity_mismatch
+    missing = data.flag_missing_equipment_or_power if version >= 2 else np.zeros(len(data), dtype=bool)
+    excluded = extreme | missing
+    reasons = np.select(
+        [extreme & missing, missing, extreme],
+        ['missing_equipment_or_power;energy_gt_1000_and_capacity_mismatch',
+         'missing_equipment_or_power', 'energy_gt_1000_and_capacity_mismatch'],
+        default='',
+    )
+    return excluded, reasons, extreme, missing
+
+
+def clean_orders(source, month, output, version=2):
     counts = Counter()
     totals = Counter()
     source_hash = sha256(source)
@@ -50,8 +64,11 @@ def clean_orders(source, month, output):
             for name, mask in flags.items():
                 data[name] = mask
                 counts[name] += int(mask.sum())
-            excluded = (data.total_elec_kwh > 1000) & data.flag_energy_capacity_mismatch
-            data['exclusion_reason'] = np.where(excluded, 'energy_gt_1000_and_capacity_mismatch', '')
+            excluded, reasons, extreme, missing = exclusion_rules(data, version)
+            data['exclusion_reason'] = reasons
+            counts['excluded_extreme_energy'] += int(extreme.sum())
+            counts['excluded_missing_equipment_or_power'] += int(missing.sum())
+            counts['excluded_rule_overlap'] += int((extreme & missing).sum())
             counts['input_rows'] += len(data)
             counts['excluded_rows'] += int(excluded.sum())
             counts['clean_rows'] += int((~excluded).sum())
@@ -76,13 +93,21 @@ def clean_orders(source, month, output):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--version', type=int, choices=[1, 2], default=2,
+                        help='v1 excludes extreme energy; v2 also excludes missing equipment or power')
+    args = parser.parse_args()
     # Each run gets a new directory; previous outputs are preserved.
     run_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
-    output = ROOT / 'data/processed' / f'clean_v1_{run_id}'
+    output = ROOT / 'data/processed' / f'clean_v{args.version}_{run_id}'
     output.mkdir(parents=True, exist_ok=False)
-    report = {'version': 1, 'run_id': run_id, 'output_directory': str(output), 'orders': {}}
+    report = {'version': args.version, 'run_id': run_id, 'output_directory': str(output),
+              'rules': {'extreme_energy': 'energy > 1000 kWh AND energy > power_kw * duration_hours * 1.05',
+                        'exclude_missing_equipment_or_power': args.version >= 2,
+                        'time_policy': 'retain cross-month and dating_time-mismatch records with flags'},
+              'orders': {}}
     for month in ('2025-01', '2025-07'):
-        report['orders'][month] = clean_orders(ROOT/'data/raw'/f'orders_{month}_public.parquet', month, output)
+        report['orders'][month] = clean_orders(ROOT/'data/raw'/f'orders_{month}_public.parquet', month, output, args.version)
         print(month, json.dumps(report['orders'][month]['counts']), flush=True)
     source = ROOT/'data/raw/stations_monthly_public.parquet'
     digest = sha256(source)
@@ -96,7 +121,7 @@ def main():
     assert pq.ParquetFile(output/'stations_monthly_clean.parquet').metadata.num_rows == len(stations)
     report['stations'] = {'source_sha256': digest, 'rows': len(stations), 'site_names_normalized': int((stations.construction_site_raw != stations.construction_site).sum())}
     (output/'cleaning_manifest.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
-    report_path = ROOT/'reports'/f'cleaning_v1_{run_id}.json'
+    report_path = ROOT/'reports'/f'cleaning_v{args.version}_{run_id}.json'
     report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     print('Output:', output, flush=True)
 

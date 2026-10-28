@@ -26,7 +26,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--metric', choices=['all', 'orders', 'energy_kwh', 'utilization'], default='all')
     args = parser.parse_args()
-    manifests = sorted((ROOT/'data/processed').glob('clean_v1_*/cleaning_manifest.json'))
+    manifests = sorted((ROOT/'data/processed').glob('clean_v[12]_*/cleaning_manifest.json'),
+                       key=lambda path: path.stat().st_mtime_ns)
     if not manifests:
         raise SystemExit('Run src/clean_dataset.py first.')
     manifest = json.loads(manifests[-1].read_text(encoding='utf-8'))

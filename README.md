@@ -67,18 +67,18 @@ python src/inspect_dataset.py
 
 对于Parquet文件，盘点脚本只读取文件元数据，不会把全部交易记录载入内存。
 
-## 第一版清洗数据
+## 清洗数据（当前默认第二版）
 
-运行 `python src/clean_dataset.py`。脚本在 `data/processed/clean_v1_<运行时间>/` 创建新的输出目录，原始文件保持不变。
+运行 `python src/clean_dataset.py`，默认生成v2结果，在 `data/processed/clean_v2_<运行时间>/` 创建新目录。v2在原极端电量规则之外，剔除设备类型或功率缺失的订单。原始文件和v1结果保持不变；`--version 1` 可复现旧规则。
 
 - `orders_2025-01_clean.parquet`、`orders_2025-07_clean.parquet`：保留订单，统一住宅场景名称，增加原文件名、零起始原行号、开始日期和异常标记。
-- `orders_2025-01_excluded.parquet`、`orders_2025-07_excluded.parquet`：隔离电量超过1,000 kWh且超过记录功率×时长105%的记录。隔离是首轮分析规则，并不推断错误产生原因。
+- `orders_2025-01_excluded.parquet`、`orders_2025-07_excluded.parquet`：保存被剔除的记录及原因。v2包括设备类型或功率缺失，以及电量超过1,000 kWh且超过记录功率×时长105%的订单；按规则并集剔除，记录重叠数量，不重复计数。
 - `stations_monthly_clean.parquet`：统一场景名称；月度电量和利用率仍为上游原始汇总，不能当作清洗订单重算后的指标。
 - `cleaning_manifest.json`：成功完成后的清单、行数、电量和源文件SHA-256。只有包含此文件的目录才视为完成；`failed_`目录不用于分析。
 
-跨月会话、高功率、设备缺失及其他容量可疑记录保留并标记，不做无依据插补或去重。时序分析使用 `analysis_date`，同时保留 `file_month` 和 `analysis_month` 以识别文件月份与开始月份的区别。原始 `dating_time` 保留待核实。
+v2剔除设备类型或功率缺失的订单。跨月会话、高功率及其他容量可疑记录仍保留并标记，不做无依据插补或去重。时序分析使用 `analysis_date`，同时保留 `file_month` 和 `analysis_month` 以识别文件月份与开始月份的区别。原始 `dating_time` 保留待核实。
 
-清洗结果保存在本地，不推送数据文件。清洗报告清单保存在 `reports/cleaning_v1_<运行时间>.json`。现有绘图脚本仍读取原始数据，尚未切换到清洗版本。
+清洗结果保存在本地，不推送数据文件。报告清单保存为 `reports/cleaning_v<版本>_<运行时间>.json`。原始图表脚本继续读取原始数据，清洗图表脚本选择最新完成的v1或v2清洗结果。现有已生成图表不会因清洗运行而自动更新。
 
 ## 匿名网格空间分布
 
@@ -92,7 +92,7 @@ python src/inspect_dataset.py
 
 ## 基础图表（清洗后及原始版本）
 
-清洗后图表运行 `python src/create_clean_visualizations.py`，默认选择最新已完成的清洗目录。新图保存到 `reports/figures/cleaned/`，原有图表保留。口径及数值对照见 [清洗图表说明](reports/cleaned_chart_review.md)。
+清洗后图表运行 `python src/create_clean_visualizations.py`，默认选择最新已完成的清洗目录。v1图表在 `reports/figures/cleaned/`；v2图表保存到其下 `v2_<运行时间>/`，不覆盖旧版。以下嵌入图仍为v1，口径及数值对照见 [清洗图表说明](reports/cleaned_chart_review.md)。
 
 ![Cleaned monthly overview](reports/figures/cleaned/01-monthly-overview.png)
 
