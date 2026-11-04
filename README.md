@@ -6,6 +6,8 @@
 
 汇报入口：[新版阶段总结与后续任务](reports/新版数据阶段总结与后续任务.md)，包含图表、结果、限制、讲稿和最新版PPT索引。
 
+最新追加：[自然月占用时长对照](reports/calendar_month_review.md)与[文献参考及可视化扩展方案](reports/文献参考与可视化扩展方案.md)。运行 `python src/analyze_calendar_month.py`。跨月会话拆分只处理时长，不分摊电量；固定共同站点后，现有样本自然月利用率为1月4.540948%、7月9.008884%。已新增月界对照、流入流出、星期×小时到达热图和网格集中度曲线。1月结束可延续至2月，7月结束却止于7月底，窗口不对称仍需核实，不能称严格完整自然月结果。
+
 已完成[共同网格与共同站点冬夏比较](reports/winter_summer_comparison.md)：运行 `python src/compare_winter_summer.py`。共同网格2,239个，共同有订单站点5,661个。固定共同站点后，1月、7月汇总利用率分别为4.555%、8.975%。这是观察样本差异，不是季节因果或需求缺口结论。
 
 已补做[论文低样本筛选与设施计数敏感性](reports/release_v2_filters_sensitivity.md)：运行 `python src/analyze_grid_sensitivity.py`。4张独立对照图和数值清单位于 [筛选与敏感性目录](reports/figures/source_release2/20261104T011749595890Z/paper_filters_sensitivity/)。平均单次电量图采用至少5笔订单，利用率图采用至少5把枪，均只影响展示；另比较移除设施总分项不一致站点后的结果，不修改原始或基准清洗数据。
