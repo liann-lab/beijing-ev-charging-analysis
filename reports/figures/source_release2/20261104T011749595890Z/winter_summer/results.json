@@ -1,0 +1,421 @@
+{
+  "run_id": "20261104T011749595890Z",
+  "source_sha256": "8b21e14f4b714c5af8905a93e9fa32fffe89344b4122c7be525feba9c388eca1",
+  "common_grids": 2239,
+  "common_stations": 5661,
+  "cohorts": {
+    "all_observed": {
+      "monthly": {
+        "2025-01": {
+          "grids": 2317,
+          "stations": 6242,
+          "orders": 2136035,
+          "energy_kwh": 59951137.39830001,
+          "guns": 71753.0,
+          "pooled_utilization": 0.045282556155033446,
+          "pooled_sessions_per_gun_day": 0.9602992883741401
+        },
+        "2025-07": {
+          "grids": 2556,
+          "stations": 7967,
+          "orders": 6393968,
+          "energy_kwh": 175447478.5101,
+          "guns": 93107.0,
+          "pooled_utilization": 0.08852030301986542,
+          "pooled_sessions_per_gun_day": 2.2152688010360606
+        }
+      },
+      "paired_metrics": {
+        "utilization": {
+          "paired_grids": 1987,
+          "median_jan": 0.036393190613474624,
+          "median_jul": 0.06827854514603829,
+          "median_paired_change": 0.025073073562408617,
+          "share_increased": 0.8364368394564671,
+          "share_decreased": 0.16356316054353295,
+          "q25_change": 0.005567680331541218,
+          "q75_change": 0.06066117935251558
+        },
+        "sessions_per_gun_day": {
+          "paired_grids": 1987,
+          "median_jan": 0.5459057071960298,
+          "median_jul": 1.1436950146627565,
+          "median_paired_change": 0.4125122189638319,
+          "share_increased": 0.863613487669854,
+          "share_decreased": 0.13336688475088074,
+          "q25_change": 0.09235791090629801,
+          "q75_change": 1.6097981923016986
+        },
+        "energy_per_gun_day": {
+          "paired_grids": 1987,
+          "median_jan": 13.888434535104365,
+          "median_jul": 28.55502059025395,
+          "median_paired_change": 9.554245161290321,
+          "share_increased": 0.8459989934574735,
+          "share_decreased": 0.1540010065425264,
+          "q25_change": 1.4892016129032257,
+          "q75_change": 42.30315269142616
+        },
+        "mean_energy": {
+          "paired_grids": 2107,
+          "median_jan": 25.44658823529412,
+          "median_jul": 24.73662251655629,
+          "median_paired_change": -0.8859993788819907,
+          "share_increased": 0.3782629330802088,
+          "share_decreased": 0.6217370669197911,
+          "q25_change": -2.9328131274518423,
+          "q75_change": 1.1243662510818684
+        }
+      }
+    },
+    "common_grids": {
+      "monthly": {
+        "2025-01": {
+          "grids": 2239,
+          "stations": 6156,
+          "orders": 2129531,
+          "energy_kwh": 59759270.965299994,
+          "guns": 71146.0,
+          "pooled_utilization": 0.04544711621408462,
+          "pooled_sessions_per_gun_day": 0.9655433669791242
+        },
+        "2025-07": {
+          "grids": 2239,
+          "stations": 7532,
+          "orders": 6090884,
+          "energy_kwh": 165862778.9016,
+          "guns": 88229.0,
+          "pooled_utilization": 0.08873591018145556,
+          "pooled_sessions_per_gun_day": 2.226933650299313
+        }
+      },
+      "paired_metrics": {
+        "utilization": {
+          "paired_grids": 1987,
+          "median_jan": 0.036393190613474624,
+          "median_jul": 0.06827854514603829,
+          "median_paired_change": 0.025073073562408617,
+          "share_increased": 0.8364368394564671,
+          "share_decreased": 0.16356316054353295,
+          "q25_change": 0.005567680331541218,
+          "q75_change": 0.06066117935251558
+        },
+        "sessions_per_gun_day": {
+          "paired_grids": 1987,
+          "median_jan": 0.5459057071960298,
+          "median_jul": 1.1436950146627565,
+          "median_paired_change": 0.4125122189638319,
+          "share_increased": 0.863613487669854,
+          "share_decreased": 0.13336688475088074,
+          "q25_change": 0.09235791090629801,
+          "q75_change": 1.6097981923016986
+        },
+        "energy_per_gun_day": {
+          "paired_grids": 1987,
+          "median_jan": 13.888434535104365,
+          "median_jul": 28.55502059025395,
+          "median_paired_change": 9.554245161290321,
+          "share_increased": 0.8459989934574735,
+          "share_decreased": 0.1540010065425264,
+          "q25_change": 1.4892016129032257,
+          "q75_change": 42.30315269142616
+        },
+        "mean_energy": {
+          "paired_grids": 2107,
+          "median_jan": 25.44658823529412,
+          "median_jul": 24.73662251655629,
+          "median_paired_change": -0.8859993788819907,
+          "share_increased": 0.3782629330802088,
+          "share_decreased": 0.6217370669197911,
+          "q25_change": -2.9328131274518423,
+          "q75_change": 1.1243662510818684
+        }
+      }
+    },
+    "common_stations": {
+      "monthly": {
+        "2025-01": {
+          "grids": 2205,
+          "stations": 5661,
+          "orders": 1997697,
+          "energy_kwh": 55908468.7833,
+          "guns": 66593.0,
+          "pooled_utilization": 0.04554644721575047,
+          "pooled_sessions_per_gun_day": 0.967696885703864
+        },
+        "2025-07": {
+          "grids": 2205,
+          "stations": 5661,
+          "orders": 4669754,
+          "energy_kwh": 127976882.734,
+          "guns": 66593.0,
+          "pooled_utilization": 0.08975395920130633,
+          "pooled_sessions_per_gun_day": 2.2620579611438383
+        }
+      },
+      "paired_metrics": {
+        "utilization": {
+          "paired_grids": 1959,
+          "median_jan": 0.03606571610391982,
+          "median_jul": 0.06473319807619203,
+          "median_paired_change": 0.022723126004202204,
+          "share_increased": 0.8504338948443083,
+          "share_decreased": 0.1495661051556917,
+          "q25_change": 0.005673940909996018,
+          "q75_change": 0.05821955271804062
+        },
+        "sessions_per_gun_day": {
+          "paired_grids": 1959,
+          "median_jan": 0.5579958819492107,
+          "median_jul": 1.0403225806451613,
+          "median_paired_change": 0.3684863523573201,
+          "share_increased": 0.8861664114344053,
+          "share_decreased": 0.10923940786115365,
+          "q25_change": 0.09633882246785483,
+          "q75_change": 1.4871916508538898
+        },
+        "energy_per_gun_day": {
+          "paired_grids": 1959,
+          "median_jan": 14.032616487455197,
+          "median_jul": 25.562869269949065,
+          "median_paired_change": 8.249193548387098,
+          "share_increased": 0.8718734047983665,
+          "share_decreased": 0.1281265952016335,
+          "q25_change": 1.6013978494623657,
+          "q75_change": 39.41857488479263
+        },
+        "mean_energy": {
+          "paired_grids": 2069,
+          "median_jan": 25.37272727272727,
+          "median_jul": 24.49034597875569,
+          "median_paired_change": -0.9236739256808093,
+          "share_increased": 0.36732721121314643,
+          "share_decreased": 0.6326727887868535,
+          "q25_change": -2.8509704539995226,
+          "q75_change": 0.9871579140158104
+        }
+      }
+    },
+    "common_stations_consistent_facilities": {
+      "monthly": {
+        "2025-01": {
+          "grids": 2201,
+          "stations": 5639,
+          "orders": 1963093,
+          "energy_kwh": 55042623.9713,
+          "guns": 66041.0,
+          "pooled_utilization": 0.04533387803541614,
+          "pooled_sessions_per_gun_day": 0.95888282498995
+        },
+        "2025-07": {
+          "grids": 2201,
+          "stations": 5639,
+          "orders": 4582432,
+          "energy_kwh": 125858858.039,
+          "guns": 66041.0,
+          "pooled_utilization": 0.08926424923534614,
+          "pooled_sessions_per_gun_day": 2.2383123680255324
+        }
+      },
+      "paired_metrics": {
+        "utilization": {
+          "paired_grids": 1951,
+          "median_jan": 0.03599164613201911,
+          "median_jul": 0.06422902881169011,
+          "median_paired_change": 0.022668310360340425,
+          "share_increased": 0.8503331624807791,
+          "share_decreased": 0.1496668375192209,
+          "q25_change": 0.005599229754213042,
+          "q75_change": 0.05805890179105609
+        },
+        "sessions_per_gun_day": {
+          "paired_grids": 1951,
+          "median_jan": 0.5544013121924548,
+          "median_jul": 1.0254342431761787,
+          "median_paired_change": 0.36248884355476224,
+          "share_increased": 0.8856996412096361,
+          "share_decreased": 0.1096873398257304,
+          "q25_change": 0.0952927860448084,
+          "q75_change": 1.452627353670997
+        },
+        "energy_per_gun_day": {
+          "paired_grids": 1951,
+          "median_jan": 13.970430107526882,
+          "median_jul": 25.095885483870966,
+          "median_paired_change": 8.087990820875952,
+          "share_increased": 0.8718605843157355,
+          "share_decreased": 0.12813941568426448,
+          "q25_change": 1.5687788018433184,
+          "q75_change": 38.93299411962366
+        },
+        "mean_energy": {
+          "paired_grids": 2063,
+          "median_jan": 25.364444444444445,
+          "median_jul": 24.482400688722173,
+          "median_paired_change": -0.9233680975703429,
+          "share_increased": 0.3698497333979641,
+          "share_decreased": 0.6301502666020359,
+          "q25_change": -2.8540842821450205,
+          "q75_change": 1.0038735979884343
+        }
+      }
+    }
+  },
+  "large_local_changes": {
+    "2025-01": [
+      {
+        "grid_id": "9919_4428",
+        "utilization_base": 0.14300945576306356,
+        "guns_base": 38.0,
+        "orders_base": 4991,
+        "utilization_alt": 0.023956173195084484,
+        "guns_alt": 14.0,
+        "orders_alt": 70,
+        "delta_pp": -11.905328256797908,
+        "removed_station_ids": [
+          "ST_003562"
+        ],
+        "removed_guns": 24.0,
+        "removed_duration_min": 227618.15
+      },
+      {
+        "grid_id": "9885_4425",
+        "utilization_base": 0.11652023376554924,
+        "guns_base": 34.0,
+        "orders_base": 3943,
+        "utilization_alt": 0.005794280167264039,
+        "guns_alt": 10.0,
+        "orders_alt": 14,
+        "delta_pp": -11.07259535982852,
+        "removed_station_ids": [
+          "ST_000828"
+        ],
+        "removed_guns": 24.0,
+        "removed_duration_min": 174263.18333333332
+      },
+      {
+        "grid_id": "9896_4425",
+        "utilization_base": 0.06940451855585424,
+        "guns_base": 16.0,
+        "orders_base": 1081,
+        "utilization_alt": 0.17042755625248904,
+        "guns_alt": 6.0,
+        "orders_alt": 1059,
+        "delta_pp": 10.10230376966348,
+        "removed_station_ids": [
+          "ST_000833"
+        ],
+        "removed_guns": 10.0,
+        "removed_duration_min": 3924.166666666667
+      },
+      {
+        "grid_id": "9890_4433",
+        "utilization_base": 0.10077513353011454,
+        "guns_base": 17.0,
+        "orders_base": 1589,
+        "utilization_alt": 0.002169889984070092,
+        "guns_alt": 6.0,
+        "orders_alt": 9,
+        "delta_pp": -9.860524354604443,
+        "removed_station_ids": [
+          "ST_003836"
+        ],
+        "removed_guns": 11.0,
+        "removed_duration_min": 75895.04999999999
+      },
+      {
+        "grid_id": "9903_4438",
+        "utilization_base": 0.10130442899070179,
+        "guns_base": 23.0,
+        "orders_base": 1908,
+        "utilization_alt": 0.020973749592701207,
+        "guns_alt": 11.0,
+        "orders_alt": 144,
+        "delta_pp": -8.033067939800057,
+        "removed_station_ids": [
+          "ST_003256"
+        ],
+        "removed_guns": 12.0,
+        "removed_duration_min": 93712.33333333334
+      }
+    ],
+    "2025-07": [
+      {
+        "grid_id": "9885_4425",
+        "utilization_base": 0.20647628742357155,
+        "guns_base": 34.0,
+        "orders_base": 8275,
+        "utilization_alt": 0.047567428315412184,
+        "guns_alt": 10.0,
+        "orders_alt": 135,
+        "delta_pp": -15.890885910815935,
+        "removed_station_ids": [
+          "ST_000828"
+        ],
+        "removed_guns": 24.0,
+        "removed_duration_min": 292147.35
+      },
+      {
+        "grid_id": "9899_4444",
+        "utilization_base": 0.18351044375336753,
+        "guns_base": 102.0,
+        "orders_base": 22700,
+        "utilization_alt": 0.04373918597456904,
+        "guns_alt": 28.0,
+        "orders_alt": 592,
+        "delta_pp": -13.977125777879849,
+        "removed_station_ids": [
+          "ST_003841",
+          "ST_003935"
+        ],
+        "removed_guns": 74.0,
+        "removed_duration_min": 780903.95
+      },
+      {
+        "grid_id": "9908_4423",
+        "utilization_base": 0.20592511520737325,
+        "guns_base": 70.0,
+        "orders_base": 9669,
+        "utilization_alt": 0.11583538679808841,
+        "guns_alt": 46.0,
+        "orders_alt": 4003,
+        "delta_pp": -9.008972840928484,
+        "removed_station_ids": [
+          "ST_003332"
+        ],
+        "removed_guns": 24.0,
+        "removed_duration_min": 405613.7833333333
+      },
+      {
+        "grid_id": "9889_4386",
+        "utilization_base": 0.24709637351749864,
+        "guns_base": 41.0,
+        "orders_base": 12278,
+        "utilization_alt": 0.3353911788132218,
+        "guns_alt": 30.0,
+        "orders_alt": 12221,
+        "delta_pp": 8.829480529572315,
+        "removed_station_ids": [
+          "ST_006944"
+        ],
+        "removed_guns": 11.0,
+        "removed_duration_min": 3089.7999999999997
+      },
+      {
+        "grid_id": "9901_4428",
+        "utilization_base": 0.1462330796043799,
+        "guns_base": 97.0,
+        "orders_base": 16938,
+        "utilization_alt": 0.09924183592194344,
+        "guns_alt": 57.0,
+        "orders_alt": 5924,
+        "delta_pp": -4.699124368243646,
+        "removed_station_ids": [
+          "ST_004202"
+        ],
+        "removed_guns": 40.0,
+        "removed_duration_min": 380682.06666666665
+      }
+    ]
+  }
+}
