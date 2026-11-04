@@ -417,5 +417,26 @@
         "removed_duration_min": 380682.06666666665
       }
     ]
+  },
+  "scatter_display": {
+    "full_axis_max_percent": 60.0,
+    "zoom_axis_max_percent": 25.0,
+    "cohorts": {
+      "common_grids": {
+        "total": 1987,
+        "inside_zoom": 1923,
+        "outside_zoom": 64
+      },
+      "common_stations": {
+        "total": 1959,
+        "inside_zoom": 1884,
+        "outside_zoom": 75
+      },
+      "common_stations_consistent_facilities": {
+        "total": 1951,
+        "inside_zoom": 1876,
+        "outside_zoom": 75
+      }
+    }
   }
 }

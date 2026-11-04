@@ -77,17 +77,30 @@ def main():
             row['removed_duration_min']=float(flagged.monthly_duration_min.sum())
             entries.append(row)
         result['large_local_changes'][month]=entries
-    # Each plotted cohort is independently paired; fixed panels retain identity line.
-    fig,axes=plt.subplots(1,3,figsize=(13,4.5),layout='constrained')
-    for ax,name,label in zip(axes,['common_grids','common_stations','common_stations_consistent_facilities'],
-                              ['Common grids','Common stations','Common stations, counts consistent']):
-        p=paired(grid_frames[name],'utilization','guns')*100
-        ax.scatter(p[MONTHS[0]],p[MONTHS[1]],s=8,alpha=.35)
-        ax.plot([0,100],[0,100],color='gray',linewidth=1)
-        ax.set(xlim=(0,100),ylim=(0,100),xlabel='January utilization (%)',ylabel='July utilization (%)',title=f'{label}\n{len(p):,} paired grids')
-        ax.set_aspect('equal')
+    # Common equal-aspect axes preserve the identity-line interpretation. The
+    # first row contains every point; the second is explicitly a viewport zoom.
+    pair_names=['common_grids','common_stations','common_stations_consistent_facilities']
+    pairs={name:paired(grid_frames[name],'utilization','guns')*100 for name in pair_names}
+    maximum=max(float(p.to_numpy().max()) for p in pairs.values())
+    full_limit=max(10.,float(np.ceil(maximum/10)*10))
+    zoom_limit=25.
+    result['scatter_display']={'full_axis_max_percent':full_limit,'zoom_axis_max_percent':zoom_limit,'cohorts':{}}
+    fig,axes=plt.subplots(2,3,figsize=(13,9),layout='constrained')
+    for col,(name,label) in enumerate(zip(pair_names,
+                              ['Common grids','Common stations','Common stations, counts consistent'])):
+        p=pairs[name]
+        in_zoom=p[MONTHS[0]].le(zoom_limit)&p[MONTHS[1]].le(zoom_limit)
+        result['scatter_display']['cohorts'][name]={'total':len(p),'inside_zoom':int(in_zoom.sum()),'outside_zoom':int((~in_zoom).sum())}
+        for row,limit in enumerate([full_limit,zoom_limit]):
+            ax=axes[row,col]
+            shown=p if row==0 else p.loc[in_zoom]
+            ax.scatter(shown[MONTHS[0]],shown[MONTHS[1]],s=7,alpha=.3,linewidths=0,rasterized=True)
+            ax.plot([0,limit],[0,limit],color='gray',linewidth=1)
+            caption=f'All {len(p):,} paired grids' if row==0 else f'Zoom: {int(in_zoom.sum()):,} inside / {int((~in_zoom).sum()):,} outside view'
+            ax.set(xlim=(0,limit),ylim=(0,limit),xlabel='January utilization (%)',ylabel='July utilization (%)',title=f'{label}\n{caption}')
+            ax.set_aspect('equal')
     fig.suptitle('Paired grid utilization: at least 5 observed guns in both months')
-    fig.supxlabel('Observed-active samples; static capacity, full-month availability and start-month attribution assumed. Not a seasonal causal estimate.',fontsize=8)
+    fig.supxlabel('Top row: complete data range. Bottom row: 0-25% zoom; outside-view points remain in all statistics.\nObserved-active samples; static capacity, full-month availability and start-month attribution assumed. Not a seasonal causal estimate.',fontsize=8)
     fig.savefig(output/'01-paired-utilization.png',dpi=170);plt.close(fig)
     fig,axes=plt.subplots(1,2,figsize=(11,4.5),layout='constrained')
     names=list(cohorts);labels=['All observed','Common grids','Common stations','Common stations\nconsistent counts']
@@ -120,7 +133,10 @@ def main():
     lines+=['','差异由移除整个站点同时改变分子时长与分母枪数产生，不能据此认定总数或分项哪一个正确，也不能直接指定某网格为供给不足。达标样本消失的网格见上一轮敏感性清单，不补零。',
             '汇总利用率是总时长／总枪时，配对中位数则是逐网格变化的中位数，不能混称。共同站点是两月都有记录的活跃选择样本，并非两月全部真实在运设施。',
             '当前只能描述1月和7月观察样本的差异，不证明冬夏季节因果。春节、价格、车辆结构、站点开放时间与覆盖变化未被控制。',
-            '尚未校正静态容量与整月可用假设、会话重叠或自然月占用时长。现有结果不是最终选址或供需缺口结论。']
+            '本组仍采用开始月整笔归属，未校正静态容量与整月可用假设或会话重叠；独立的自然月占用时长对照见[自然月报告](calendar_month_review.md)。现有结果不是最终选址或供需缺口结论。',
+            '', '## 配对散点图显示范围', '',
+            f'上排统一使用0%—{full_limit:g}%坐标，覆盖全部配对点。下排统一放大0%—{zoom_limit:g}%区间，仅改变视窗，不删除原始或分析记录，每幅标明视窗内外数量。上下排均保持横纵同尺度和相同利用率对角线。',
+            '旧0%—100%坐标造成不必要留白。标尺修订不改变配对样本、汇总利用率或变化统计。']
     (ROOT/'reports/winter_summer_comparison.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
     assert digest(source)==before
     print('\n'.join(lines),flush=True)

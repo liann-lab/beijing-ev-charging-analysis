@@ -5,7 +5,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from matplotlib.colors import LogNorm
+from matplotlib.colors import BoundaryNorm
 from matplotlib.ticker import PercentFormatter
 import numpy as np
 import pandas as pd
@@ -62,9 +62,14 @@ def paired_changes(base,alternative,metric):
 def plot_comparison(base,alt,metric,row_names,title,out,main_ids,limits):
     b,norm,cmap=utilization_color_scale()
     if metric=='mean_energy':
-        values=pd.concat([base[metric],alt[metric]])
-        values=values.loc[values.gt(0)]
-        norm,cmap=LogNorm(values.min(),values.max()),'viridis'
+        # Common thresholds for both months and both comparisons. All observed
+        # values remain visible; dense central values receive more color steps.
+        b=np.array([0,10,15,20,23,26,30,35,45,60,100,200],dtype=float)
+        values=pd.concat([base[metric],alt[metric]]).dropna()
+        if values.min()<b[0] or values.max()>b[-1]:
+            raise ValueError('Mean-energy range exceeded: revise explicit display boundaries')
+        cmap=plt.get_cmap('viridis',len(b)-1)
+        norm=BoundaryNorm(b,cmap.N)
     fig,axes=plt.subplots(2,2,figsize=(13,10),sharex=True,sharey=True,layout='constrained')
     for row,g in enumerate([base,alt]):
         for col,month in enumerate(MONTHS):
@@ -72,15 +77,33 @@ def plot_comparison(base,alt,metric,row_names,title,out,main_ids,limits):
             visible=eligible.loc[eligible.grid_id.isin(main_ids)]
             artist=axes[row,col].scatter(visible.x,visible.y,c=visible[metric],cmap=cmap,norm=norm,
                 s=10,marker='s',linewidths=0,rasterized=True)
+            annotation=''
+            if row==1 and metric=='mean_energy':
+                prior=base.loc[base.month.eq(month)].set_index('grid_id')
+                current=g.loc[g.month.eq(month)].set_index('grid_id')
+                lost=prior.loc[prior.index.difference(current.index)]
+                lost_visible=lost.loc[lost.index.isin(main_ids)]
+                axes[row,col].scatter(lost_visible.x,lost_visible.y,s=15,marker='x',c='#777777',linewidths=.8)
+                shared=prior.index.intersection(current.index)
+                changed=(current.loc[shared,metric]-prior.loc[shared,metric]).abs().gt(1e-9)
+                changed_ids=shared[changed]
+                changed_visible=current.loc[current.index.isin(changed_ids)&current.index.isin(main_ids)]
+                axes[row,col].scatter(changed_visible.x,changed_visible.y,s=30,facecolors='none',edgecolors='#111111',linewidths=.8)
+                annotation=f'\n{len(lost)} no longer eligible (gray x); {len(changed_ids)} changed (outlined)'
             axes[row,col].set(title=f'{row_names[row]} | {month}\n{len(visible):,} shown / {len(eligible):,} eligible grids',
                               xlim=limits[:2],ylim=limits[2:])
             axes[row,col].set_aspect('equal',adjustable='box')
             if row==1: axes[row,col].set_xlabel('Anonymized grid X')
             if col==0: axes[row,col].set_ylabel('Anonymized grid Y')
-    options={} if metric=='mean_energy' else dict(boundaries=b,ticks=b,spacing='uniform',format=PercentFormatter(1,decimals=0))
-    fig.colorbar(artist,ax=axes,shrink=.7,label='Mean energy (kWh/session, log scale)' if metric=='mean_energy' else 'Estimated connector utilization',**options)
+            if annotation:
+                axes[row,col].text(.01,.01,annotation.strip(),transform=axes[row,col].transAxes,fontsize=8,
+                    bbox=dict(facecolor='white',alpha=.9,edgecolor='none'))
+    options=dict(boundaries=b,ticks=b,spacing='uniform')
+    if metric!='mean_energy':options['format']=PercentFormatter(1,decimals=0)
+    fig.colorbar(artist,ax=axes,shrink=.7,label='Mean energy (kWh/session, unequal bins)' if metric=='mean_energy' else 'Estimated connector utilization',**options)
     fig.suptitle(title,fontsize=14)
-    fig.supxlabel('Same coordinates and color scale across all panels. Blank = unobserved or excluded by the stated display rule.\n'
+    extra='Mean-energy bins are narrower near 20-30 kWh; bin widths are unequal. No values clipped.\n' if metric=='mean_energy' else ''
+    fig.supxlabel(extra+'Same coordinates and color scale across all panels. Blank = unobserved or excluded by the stated display rule.\n'
                   'Remote grid retained in totals, omitted from main-cluster view. Whole sessions assigned to start month.',fontsize=9)
     fig.savefig(out,dpi=170)
     plt.close(fig)
@@ -151,8 +174,11 @@ def main():
         c=d['metrics']['utilization']['paired_changes']
         lines.append(f"| {month} | {c['median_abs_difference']*100:.4f} | {c['p95_abs_difference']*100:.4f} | {c['max_abs_difference']*100:.4f} | {c['rank_correlation']:.4f} |")
     lines+=['','指标差异为替代方案减基准的绝对值；排名相关使用共同达标网格的平均秩Pearson相关（Spearman定义）。低样本或移除站点导致不达标的网格另计，不以零填补。',
-        '总体影响小不代表每个网格均不受影响，局部差异需单独核查。当前仍存在静态枪数、整月可用及开始月整笔归属假设，未进行停机、会话重叠和自然月时长分摊。',
-        '图上主坐标簇与所有统计使用的完整网格范围分开报告，空间离群点未从数据删除。未进一步完成冬夏共同站点或因果分析。']
+        '总体影响小不代表每个网格均不受影响，局部差异需单独核查。本组分析使用静态枪数、整月可用及开始月整笔归属假设，未校正停机或会话重叠。独立的自然月时长对照见[自然月报告](calendar_month_review.md)。',
+        '图上主坐标簇与所有统计使用的完整网格范围分开报告，空间离群点未从数据删除。共同站点比较见[冬夏报告](winter_summer_comparison.md)，当前未作因果分析。',
+        '', '## 图表标尺修订', '',
+        '平均单次电量两张图使用相同的分段色标：0、10、15、20、23、26、30、35、45、60、100、200 kWh。常见20—30 kWh区间细分，所有观测值保留，色条各段宽度不等，不再使用跨多个数量级的对数色标。',
+        '下排灰色叉号标记不再达标的网格，黑色空心圈标记在共同达标样本中均值变化超过数值容差1e-9 kWh的网格。数量按完整样本统计，远端网格仍按主图范围规则隐藏。展示筛选不会改变保留网格的均值，前后颜色一致具有实际含义。']
     (ROOT/'reports/release_v2_filters_sensitivity.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
     print(json.dumps(report['months'],ensure_ascii=False,indent=2),flush=True)
     print(output)

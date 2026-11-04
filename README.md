@@ -98,7 +98,7 @@ python src/analyze_calendar_month.py
 
 这组图单独实施论文展示门槛，基准空间图仍保留完整观测网格。详见[筛选及敏感性说明](reports/release_v2_filters_sensitivity.md)。
 
-**9. 平均单次电量的低样本筛选对照**：筛选前后比较，门槛为至少5笔订单。
+**9. 平均单次电量的低样本筛选对照**：门槛为至少5笔订单。共用常见范围更细的分段色标，灰叉标出筛掉的网格，保留网格的均值不变。
 
 ![平均单次电量展示筛选](reports/figures/source_release2/20261104T011749595890Z/paper_filters_sensitivity/mean_energy_display_filter.png)
 
@@ -106,7 +106,7 @@ python src/analyze_calendar_month.py
 
 ![利用率展示筛选](reports/figures/source_release2/20261104T011749595890Z/paper_filters_sensitivity/utilization_display_filter.png)
 
-**11. 平均单次电量的设施计数敏感性**：比较保留与排除设施总分项不一致站点的结果。
+**11. 平均单次电量的设施计数敏感性**：比较保留与排除设施总分项不一致站点的结果，与图9使用同一色标，黑色空心圈标出均值发生变化的网格。
 
 ![平均电量设施计数敏感性](reports/figures/source_release2/20261104T011749595890Z/paper_filters_sensitivity/mean_energy_facility_sensitivity.png)
 
@@ -116,7 +116,7 @@ python src/analyze_calendar_month.py
 
 ### 四、共同网格与共同站点冬夏比较（2张）
 
-**13. 网格利用率配对散点图**：横轴1月、纵轴7月，对角线上方表示7月更高；各面板分别控制网格或站点范围。
+**13. 网格利用率配对散点图**：横轴1月、纵轴7月，对角线上方表示7月更高。上排统一0%—60%覆盖全部点，下排统一0%—25%放大并标明视窗内外数量；各列分别控制网格或站点范围。详见[标尺核查](reports/chart_scale_review.md)。
 
 ![冬夏配对利用率](reports/figures/source_release2/20261104T011749595890Z/winter_summer/01-paired-utilization.png)
 
