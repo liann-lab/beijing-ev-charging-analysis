@@ -4,6 +4,8 @@
 
 ## 当前主线：发布版Version 2（2026-11-04重新核验）
 
+汇报入口：[新版阶段总结与后续任务](reports/新版数据阶段总结与后续任务.md)，包含图表、结果、限制、讲稿和最新版PPT索引。
+
 已完成[共同网格与共同站点冬夏比较](reports/winter_summer_comparison.md)：运行 `python src/compare_winter_summer.py`。共同网格2,239个，共同有订单站点5,661个。固定共同站点后，1月、7月汇总利用率分别为4.555%、8.975%。这是观察样本差异，不是季节因果或需求缺口结论。
 
 已补做[论文低样本筛选与设施计数敏感性](reports/release_v2_filters_sensitivity.md)：运行 `python src/analyze_grid_sensitivity.py`。4张独立对照图和数值清单位于 [筛选与敏感性目录](reports/figures/source_release2/20261104T011749595890Z/paper_filters_sensitivity/)。平均单次电量图采用至少5笔订单，利用率图采用至少5把枪，均只影响展示；另比较移除设施总分项不一致站点后的结果，不修改原始或基准清洗数据。
