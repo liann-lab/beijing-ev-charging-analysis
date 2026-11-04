@@ -1,8 +1,8 @@
 {
   "date": "2026-11-04",
   "scope": "Generated derivatives of Figshare release Version 1; includes project clean_v1 and clean_v2 based on that release",
-  "deleted_file_count": 51.0,
-  "deleted_bytes": 689642787.0,
+  "deleted_file_count": 52.0,
+  "deleted_bytes": 693955819.0,
   "targets": [
     {
       "path": "reports/figures/cleaned",
@@ -147,7 +147,7 @@
     {
       "path": "deliverables/北京充电数据分析_阶段报告_1102最新版.pptx",
       "existed_before": true,
-      "status": "pending_file_in_use",
+      "status": "deleted",
       "file_count": 1,
       "bytes": 4313032.0
     },
@@ -173,9 +173,7 @@
       "bytes": 0
     }
   ],
-  "pending": [
-    "deliverables/北京充电数据分析_阶段报告_1102最新版.pptx"
-  ],
+  "pending": [],
   "protected_file_count": 26,
   "protected_hash_check": "SHA256 unchanged: raw release1, release2 source, current release2 and calendar derived data, local translations and root papers",
   "notes": [
