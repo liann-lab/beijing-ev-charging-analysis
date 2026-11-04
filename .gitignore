@@ -18,6 +18,10 @@ data/raw/*
 !data/raw/.gitkeep
 data/processed/*
 !data/processed/.gitkeep
+data/redownloaded/
+data/redownload/
+~$*.pptx
+deliverables/~$*.pptx
 
 # 自动生成的分析结果
 reports/*.csv

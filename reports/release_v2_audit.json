@@ -1,0 +1,194 @@
+{
+  "source_release": "Figshare Version 2 (user-downloaded; not legacy cleaning v2)",
+  "source_directory": "data\\redownloaded\\31952289",
+  "source_sha256": {
+    "orders_2025-01_public.parquet": "928d5341c95bab499247fd399e002f6afb92a8b10a1d2bc57bbbf994a14b30b1",
+    "orders_2025-07_public.parquet": "f9f66a658fdb5a66437c3423e21c26e12346fe4e446133790a72b275a9d49afb",
+    "stations_public.parquet": "3db96289c1f906de8b481372772b72164211868026ceedfc7a2858f56c336b85"
+  },
+  "stations": {
+    "rows": 8553,
+    "unique_station_ids": 8553,
+    "duplicate_station_id_rows": 0,
+    "nulls": {
+      "geocoding": 0,
+      "station_id": 0,
+      "construction_site": 0,
+      "station_total_power_kw": 0,
+      "piles_num": 0,
+      "dc_piles_num": 0,
+      "ac_piles_num": 0,
+      "charging_gun_num": 0,
+      "dc_charging_gun_num": 0,
+      "ac_charging_gun_num": 0
+    },
+    "columns": [
+      "geocoding",
+      "station_id",
+      "construction_site",
+      "station_total_power_kw",
+      "piles_num",
+      "dc_piles_num",
+      "ac_piles_num",
+      "charging_gun_num",
+      "dc_charging_gun_num",
+      "ac_charging_gun_num"
+    ],
+    "unparseable_grid_rows": 0,
+    "grid_count": 2636,
+    "pile_component_mismatch": 41,
+    "gun_component_mismatch": 42
+  },
+  "orders": {
+    "2025-01": {
+      "columns": [
+        "transaction_date",
+        "equipment_classification",
+        "rated_gun_power_kw",
+        "station_id",
+        "pile_id",
+        "duration_min",
+        "charge_start_time",
+        "charge_end_time",
+        "total_elec_kwh",
+        "total_elec_fee",
+        "total_service_fee",
+        "total_fee"
+      ],
+      "counts": {
+        "rows": 2137234,
+        "diff_vs_legacy_charge_start_time": 0,
+        "diff_vs_legacy_charge_end_time": 0,
+        "diff_vs_legacy_total_elec_kwh": 0,
+        "diff_vs_legacy_power": 0,
+        "diff_transaction_date_vs_legacy_dating_time": 345059,
+        "transaction_date_not_start_date": 0,
+        "transaction_date_not_end_date": 203635,
+        "start_outside_file_month": 0,
+        "end_not_after_start": 0,
+        "duration_difference_gt_1min": 0,
+        "duration_gt_24h": 0,
+        "unmatched_station_rows": 0,
+        "missing_any_order_field": 1179,
+        "energy_gt_200": 834,
+        "energy_gt_200_non_bus": 834,
+        "energy_gt_1000": 20,
+        "capacity_mismatch_105pct": 10825,
+        "extreme_joint_rule": 20,
+        "missing_or_extreme_joint": 1199,
+        "any_negative_numeric": 0,
+        "fee_gap_gt_cent": 0
+      },
+      "nulls": {
+        "transaction_date": 0,
+        "equipment_classification": 1179,
+        "rated_gun_power_kw": 1179,
+        "station_id": 0,
+        "pile_id": 0,
+        "duration_min": 0,
+        "charge_start_time": 0,
+        "charge_end_time": 0,
+        "total_elec_kwh": 0,
+        "total_elec_fee": 0,
+        "total_service_fee": 0,
+        "total_fee": 0
+      },
+      "metrics": {
+        "energy_kwh": 61897492.41629999,
+        "max_energy_kwh": 328047.62,
+        "max_rated_power_kw": 960.0
+      },
+      "observed_stations": 6246,
+      "observed_piles": 43353,
+      "start_month_counts": {
+        "2025-01": 2137234
+      },
+      "extreme_examples": [
+        {
+          "station_id": "ST_007061",
+          "rated_gun_power_kw": 240.0,
+          "duration_min": 0.11666666666666667,
+          "total_elec_kwh": 287787.3
+        },
+        {
+          "station_id": "ST_007061",
+          "rated_gun_power_kw": 240.0,
+          "duration_min": 0.08333333333333333,
+          "total_elec_kwh": 286755.74
+        },
+        {
+          "station_id": "ST_007061",
+          "rated_gun_power_kw": 240.0,
+          "duration_min": 0.11666666666666667,
+          "total_elec_kwh": 328047.62
+        }
+      ]
+    },
+    "2025-07": {
+      "columns": [
+        "transaction_date",
+        "equipment_classification",
+        "rated_gun_power_kw",
+        "station_id",
+        "pile_id",
+        "duration_min",
+        "charge_start_time",
+        "charge_end_time",
+        "total_elec_kwh",
+        "total_elec_fee",
+        "total_service_fee",
+        "total_fee"
+      ],
+      "counts": {
+        "rows": 6407461,
+        "diff_vs_legacy_charge_start_time": 0,
+        "diff_vs_legacy_charge_end_time": 0,
+        "diff_vs_legacy_total_elec_kwh": 0,
+        "diff_vs_legacy_power": 0,
+        "diff_transaction_date_vs_legacy_dating_time": 1888155,
+        "transaction_date_not_start_date": 13493,
+        "transaction_date_not_end_date": 415688,
+        "start_outside_file_month": 13493,
+        "end_not_after_start": 0,
+        "duration_difference_gt_1min": 0,
+        "duration_gt_24h": 0,
+        "unmatched_station_rows": 0,
+        "missing_any_order_field": 0,
+        "energy_gt_200": 6127,
+        "energy_gt_200_non_bus": 6127,
+        "energy_gt_1000": 0,
+        "capacity_mismatch_105pct": 38280,
+        "extreme_joint_rule": 0,
+        "missing_or_extreme_joint": 0,
+        "any_negative_numeric": 0,
+        "fee_gap_gt_cent": 0
+      },
+      "nulls": {
+        "transaction_date": 0,
+        "equipment_classification": 0,
+        "rated_gun_power_kw": 0,
+        "station_id": 0,
+        "pile_id": 0,
+        "duration_min": 0,
+        "charge_start_time": 0,
+        "charge_end_time": 0,
+        "total_elec_kwh": 0,
+        "total_elec_fee": 0,
+        "total_service_fee": 0,
+        "total_fee": 0
+      },
+      "metrics": {
+        "energy_kwh": 175974584.03730002,
+        "max_energy_kwh": 608.057,
+        "max_rated_power_kw": 3600.0
+      },
+      "observed_stations": 7972,
+      "observed_piles": 62936,
+      "start_month_counts": {
+        "2025-07": 6393968,
+        "2025-06": 13493
+      },
+      "extreme_examples": []
+    }
+  }
+}
