@@ -26,13 +26,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--metric', choices=['all', 'orders', 'energy_kwh', 'utilization'], default='all')
     parser.add_argument('--output-dir', type=Path, help='Save a separate chart version without replacing existing figures')
+    parser.add_argument('--clean-dir', type=Path, help='Explicit completed cleaning directory, including linked release-v2 rebuilds')
     args = parser.parse_args()
-    manifests = sorted((ROOT/'data/processed').glob('clean_v[12]_*/cleaning_manifest.json'),
-                       key=lambda path: path.stat().st_mtime_ns)
+    manifests = [args.clean_dir.resolve()/'cleaning_manifest.json'] if args.clean_dir else sorted(
+        (ROOT/'data/processed').glob('clean_v[12]_*/cleaning_manifest.json'), key=lambda path: path.stat().st_mtime_ns)
     if not manifests:
         raise SystemExit('Run src/clean_dataset.py first.')
     manifest = json.loads(manifests[-1].read_text(encoding='utf-8'))
     data = pd.read_parquet(manifests[-1].parent/'stations_monthly_clean.parquet')
+    data = data.loc[data.month.isin(['2025-01', '2025-07'])].copy()
     coordinates = data.grid_id.str.extract(r'^(?:GX)?(-?\d+)[_](?:GY)?(-?\d+)$')
     if coordinates.isna().any().any():
         raise ValueError('Unrecognized grid_id; inspect coordinate encoding before plotting.')
@@ -90,7 +92,10 @@ def main():
         fig.colorbar(artist, ax=axes, shrink=0.75,
                      label=title + (' (log color scale)' if logarithmic else ' (shared bins)'),
                      **colorbar_options)
-        fig.suptitle(title + '\nSource station-month aggregates; not reassigned by session start month', fontsize=13)
+        subtitle = ('Rebuilt from cleaned linked orders; whole sessions assigned to start month'
+                    if manifest.get('source_release') == 2 else
+                    'Source station-month aggregates; not reassigned by session start month')
+        fig.suptitle(title + '\n' + subtitle, fontsize=13)
         footer = f'Anonymous relative coordinates. Blank = unobserved. Main cluster view; {len(offscreen)} remote grid-month record listed in report.'
         if not logarithmic:
             footer += '\nUnequal percentage intervals shown as equal-width color bands; identical bins for both months. No values clipped.'
@@ -114,6 +119,18 @@ def main():
 运行：`python src/create_spatial_visualizations.py`；只更新利用率图：`python src/create_spatial_visualizations.py --metric utilization`。
 '''
     note += '\n站点月表无法按订单开始月重分配；这些空间图仍使用上游月表的月份，不与开始月订单图宣称为完全相同口径。\n'
+    if manifest.get('source_release') == 2:
+        note = f'''# 发布版v2关联重建的网格图
+
+清洗运行：`{manifest['run_id']}`。本站点月表由已清洗订单经唯一站点编号关联后重新汇总，订单、电量和利用率采用相同的开始月口径，不再使用旧发布版的上游月表。
+
+- 订单量、电量按网格求和；月利用率为会话记录时长除以静态枪数与整月分钟数，再按枪数加权汇总至网格。
+- 以静态配置推算整月可用能力，是估计连接占用率，非有效充电功率利用率；未进行会话重叠校正或跨月时长分摊。
+- 仅展示有保留订单的站点，未出现记录的站点不能直接解释为零利用率。设施数量组件不一致的站点保留并标记，未擅自修正。
+- 利用率沿用两月统一分段0%、1%、3%、5%、10%、15%、20%、30%、50%、100%，这些分段不是评价标准。
+- 匿名相对网格，不叠加真实北京道路或边界。空白代表未观测；主图仅展示主要坐标簇，远端记录保留：{offscreen[['month','grid_id','orders','energy_kwh']].to_dict(orient='records')}。
+- 当前为全量探索图，尚未应用论文中少于5笔会话或5把枪的展示筛选，不应宣称已完整复现论文。
+'''
     note_path = output/'spatial_review.md' if args.output_dir else ROOT/'reports/spatial_review.md'
     note_path.write_text(note, encoding='utf-8')
     print(grid.groupby('month').agg(grids=('grid_id', 'size'), orders=('orders','sum')).to_string())

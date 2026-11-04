@@ -1,0 +1,81 @@
+{
+  "source_release": 2,
+  "cleaning_version": 1,
+  "run_id": "20261104T011749595890Z",
+  "output_directory": "data\\processed\\source_release2_clean1_20261104T011749595890Z",
+  "source_sha256": {
+    "orders_2025-01_public.parquet": "928d5341c95bab499247fd399e002f6afb92a8b10a1d2bc57bbbf994a14b30b1",
+    "orders_2025-07_public.parquet": "f9f66a658fdb5a66437c3423e21c26e12346fe4e446133790a72b275a9d49afb",
+    "stations_public.parquet": "3db96289c1f906de8b481372772b72164211868026ceedfc7a2858f56c336b85"
+  },
+  "orders": {
+    "2025-01": {
+      "counts": {
+        "input": 2137234,
+        "excluded_missing": 1179,
+        "excluded_extreme": 20,
+        "rule_overlap": 0,
+        "excluded": 1199,
+        "clean": 2136035
+      },
+      "energy": {
+        "raw_energy_kwh": 61897492.41629999,
+        "excluded_energy_kwh": 1946355.0179999997,
+        "clean_energy_kwh": 59951137.3983
+      }
+    },
+    "2025-07": {
+      "counts": {
+        "input": 6407461,
+        "excluded_missing": 0,
+        "excluded_extreme": 0,
+        "rule_overlap": 0,
+        "excluded": 0,
+        "clean": 6407461
+      },
+      "energy": {
+        "raw_energy_kwh": 175974584.03730002,
+        "excluded_energy_kwh": 0.0,
+        "clean_energy_kwh": 175974584.03730002
+      }
+    }
+  },
+  "rules": {
+    "missing": "any missing original order field",
+    "extreme": "energy > 1000 kWh AND energy > rated power * duration_hours * 1.05",
+    "time": "whole session assigned to start month; June partial observations retained",
+    "utilization": "sum recorded duration / (static total guns * 24 hours * days); no occupancy overlap correction",
+    "not_applied": "No arbitrary station deduplication, 200kWh cutoff or Z-score deletion; these remain flags."
+  },
+  "station_month_summary": {
+    "2025-01": {
+      "orders": 2136035,
+      "energy_kwh": 59951137.3983,
+      "observed_stations": 6242,
+      "observed_grids": 2317,
+      "utilization_gt_one": 0,
+      "zero_gun_stations": 0
+    },
+    "2025-06": {
+      "orders": 13493,
+      "energy_kwh": 527105.5272,
+      "observed_stations": 3134,
+      "observed_grids": 1529,
+      "utilization_gt_one": 0,
+      "zero_gun_stations": 0
+    },
+    "2025-07": {
+      "orders": 6393968,
+      "energy_kwh": 175447478.5101,
+      "observed_stations": 7967,
+      "observed_grids": 2556,
+      "utilization_gt_one": 0,
+      "zero_gun_stations": 0
+    }
+  },
+  "stations": {
+    "rows": 8553,
+    "pile_component_mismatch": 41,
+    "gun_component_mismatch": 42
+  }
+}

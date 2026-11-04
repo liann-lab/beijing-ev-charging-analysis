@@ -2,6 +2,30 @@
 
 本项目用于分析北京市公共电动车充电交易及充电基础设施数据，当前处于数据检查和探索性可视化准备阶段。
 
+## 当前主线：发布版Version 2（2026-11-04重新核验）
+
+已从 `data/redownloaded/31952289/` 的新版原文件重启。旧 `data/raw/`、旧清洗结果及以下历史图表保留，不覆盖。**发布方Version 2与此前项目“清洗v2”不同。** 旧PPT及“订单无法关联站点”的说明只适用于旧发布版本，不应继续用于新版。
+
+新版订单有 `transaction_date`、`station_id` 和 `pile_id`；站点属性表有8,553个唯一站点。所有订单都可关联，新版网格月表已从同一批清洗订单重新计算，已经解决旧版清洗结果无法扣回网格的问题。
+
+步骤与论文对照见[重启说明](reports/release_v2_restart.md)，全量扫描见[版本核验](reports/release_v2_audit.json)，当前运行见[清洗及重建清单](reports/source_release2_clean1_20261104T011749595890Z.json)。
+
+```powershell
+python src/audit_release_v2.py
+python src/rebuild_release_v2.py
+python src/plot_release_v2.py
+```
+
+新清洗及汇总输出：`data/processed/source_release2_clean1_<时间>/`，不上传数据。新图输出：`reports/figures/source_release2/<时间>/`。只选择包含完成清单的运行，失败的部分输出不会进入分析。
+
+当前订单图及空间图都按开始月统计：1月2,136,035条，7月6,393,968条；归6月的13,493条单独保留，非完整6月。1月剔除20条极端电量及1,179条缺失记录，两类无重叠。
+
+![Release v2 monthly](reports/figures/source_release2/20261104T011749595890Z/01-monthly-overview.png)
+
+![Release v2 grid utilization](reports/figures/source_release2/20261104T011749595890Z/spatial/03-grid-utilization.png)
+
+利用率参考论文按记录会话时长／静态枪数／整月分钟数重算，含整月可用、固定设施数量假设，不是有效充电功率利用率。设施组件计数不一致仍需核实，低样本筛选及共同网格正式比较尚未完成。以下各节为旧发布版本的历史流程及结果。
+
 ## 数据来源
 
 - 论文：*A city-scale dataset of public electric vehicle charging transactions and infrastructure*
