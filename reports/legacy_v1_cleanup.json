@@ -1,0 +1,187 @@
+{
+  "date": "2026-11-04",
+  "scope": "Generated derivatives of Figshare release Version 1; includes project clean_v1 and clean_v2 based on that release",
+  "deleted_file_count": 51.0,
+  "deleted_bytes": 689642787.0,
+  "targets": [
+    {
+      "path": "reports/figures/cleaned",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 19,
+      "bytes": 2317446.0
+    },
+    {
+      "path": "reports/figures/01-monthly-overview.png",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 63268.0
+    },
+    {
+      "path": "reports/figures/02-hourly-energy-profile.png",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 117596.0
+    },
+    {
+      "path": "reports/figures/03-site-session-share.png",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 80647.0
+    },
+    {
+      "path": "reports/figures/04-session-energy-distribution.png",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 97296.0
+    },
+    {
+      "path": "reports/figures/05-utilization-distribution.png",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 51445.0
+    },
+    {
+      "path": "reports/anomaly_audit.json",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 33906.0
+    },
+    {
+      "path": "reports/anomaly_review.md",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 2495.0
+    },
+    {
+      "path": "reports/cleaned_chart_review.md",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 1111.0
+    },
+    {
+      "path": "reports/cleaned_chart_review_v2_20261028T013504762238Z_month_start.md",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 1323.0
+    },
+    {
+      "path": "reports/cleaning_v1_20261014T102252679148Z.json",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 1958.0
+    },
+    {
+      "path": "reports/cleaning_v2_20261028T013504762238Z.json",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 2458.0
+    },
+    {
+      "path": "reports/cleaning_v2_review.md",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 2111.0
+    },
+    {
+      "path": "reports/spatial_review.md",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 2012.0
+    },
+    {
+      "path": "reports/time_month_policy.md",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 2199.0
+    },
+    {
+      "path": "reports/data_inventory.csv",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 233.0
+    },
+    {
+      "path": "reports/schema_profile.csv",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 2105.0
+    },
+    {
+      "path": "data/processed/clean_v1_20261014T102252679148Z",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 6,
+      "bytes": 302986235.0
+    },
+    {
+      "path": "data/processed/clean_v2_20261028T013504762238Z",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 6,
+      "bytes": 303036202.0
+    },
+    {
+      "path": "data/processed/failed_clean_v1_20261014T102134934811Z",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 2,
+      "bytes": 72071070.0
+    },
+    {
+      "path": "deliverables/北京充电数据分析_阶段报告_1102最新版.pptx",
+      "existed_before": true,
+      "status": "pending_file_in_use",
+      "file_count": 1,
+      "bytes": 4313032.0
+    },
+    {
+      "path": "deliverables/北京充电数据分析_阶段报告_1103逐页讲稿版.pptx",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 4314668.0
+    },
+    {
+      "path": "北京充电数据分析_阶段报告.pptx",
+      "existed_before": true,
+      "status": "deleted",
+      "file_count": 1,
+      "bytes": 4455003.0
+    },
+    {
+      "path": "北京充电数据分析_原稿样式修改版.pptx",
+      "existed_before": false,
+      "status": "already_absent",
+      "file_count": 0,
+      "bytes": 0
+    }
+  ],
+  "pending": [
+    "deliverables/北京充电数据分析_阶段报告_1102最新版.pptx"
+  ],
+  "protected_file_count": 26,
+  "protected_hash_check": "SHA256 unchanged: raw release1, release2 source, current release2 and calendar derived data, local translations and root papers",
+  "notes": [
+    "Tracked deletions remain recoverable from Git history.",
+    "Ignored old processed files and untracked obsolete presentation were deleted locally.",
+    "Old analysis code retained, including plotting modules reused by release2.",
+    "Mixed temporary build artifacts are not formal outputs and were not bulk deleted."
+  ]
+}
