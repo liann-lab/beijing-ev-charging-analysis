@@ -1,0 +1,197 @@
+{
+  "run_id": "20261104T011749595890Z",
+  "source_sha256": "8b21e14f4b714c5af8905a93e9fa32fffe89344b4122c7be525feba9c388eca1",
+  "policy": {
+    "mean_energy_display": "orders >= 5",
+    "utilization_display": "guns >= 5",
+    "sensitivity": "remove whole stations with either total/component mismatch, never replace published total with component sum",
+    "coverage": "observed station-months only; not a complete infrastructure census",
+    "baseline_reference": "current conservative cleaning, not a full replication of upstream paper cleaning"
+  },
+  "remote_records": [
+    {
+      "month": "2025-07",
+      "grid_id": "85_111"
+    }
+  ],
+  "months": {
+    "2025-01": {
+      "baseline": {
+        "grids": 2317,
+        "orders": 2136035,
+        "energy_kwh": 59951137.39830001,
+        "guns": 71753.0,
+        "stations": 6242
+      },
+      "exclude_bad_facilities": {
+        "grids": 2313,
+        "orders": 2101431,
+        "energy_kwh": 59085292.5863,
+        "guns": 71201.0,
+        "stations": 6220
+      },
+      "affected_stations": 22,
+      "affected_order_share": 0.016200109080609634,
+      "affected_energy_share": 0.014442508509013746,
+      "metrics": {
+        "mean_energy": {
+          "unfiltered": {
+            "grids": 2317,
+            "orders": 2136035,
+            "energy_kwh": 59951137.39830001,
+            "guns": 71753.0,
+            "stations": 6242
+          },
+          "filtered": {
+            "grids": 2175,
+            "orders": 2135714,
+            "energy_kwh": 59944129.473299995,
+            "guns": 70669.0,
+            "stations": 6095
+          },
+          "excluded_from_display": 142,
+          "alternative_filtered": {
+            "grids": 2171,
+            "orders": 2101110,
+            "energy_kwh": 59078284.6613,
+            "guns": 70117.0,
+            "stations": 6073
+          },
+          "paired_changes": {
+            "paired_grids": 2171,
+            "baseline_only_eligible_grids": 4,
+            "alternative_only_eligible_grids": 0,
+            "median_abs_difference": 0.0,
+            "p95_abs_difference": 0.0,
+            "max_abs_difference": 14.871547444234675,
+            "rank_correlation": 0.9970250251180461,
+            "units": "kWh/session"
+          }
+        },
+        "utilization": {
+          "unfiltered": {
+            "grids": 2317,
+            "orders": 2136035,
+            "energy_kwh": 59951137.39830001,
+            "guns": 71753.0,
+            "stations": 6242
+          },
+          "filtered": {
+            "grids": 2042,
+            "orders": 2105862,
+            "energy_kwh": 59088746.2203,
+            "guns": 70909.0,
+            "stations": 5960
+          },
+          "excluded_from_display": 275,
+          "alternative_filtered": {
+            "grids": 2036,
+            "orders": 2070885,
+            "energy_kwh": 58212441.5283,
+            "guns": 70353.0,
+            "stations": 5936
+          },
+          "paired_changes": {
+            "paired_grids": 2036,
+            "baseline_only_eligible_grids": 6,
+            "alternative_only_eligible_grids": 0,
+            "median_abs_difference": 0.0,
+            "p95_abs_difference": 0.0,
+            "max_abs_difference": 0.11905328256797908,
+            "rank_correlation": 0.9936378372932766,
+            "units": "fraction (multiply by 100 for percentage points)"
+          }
+        }
+      }
+    },
+    "2025-07": {
+      "baseline": {
+        "grids": 2556,
+        "orders": 6393968,
+        "energy_kwh": 175447478.5101,
+        "guns": 93107.0,
+        "stations": 7967
+      },
+      "exclude_bad_facilities": {
+        "grids": 2550,
+        "orders": 6277497,
+        "energy_kwh": 172469963.9401,
+        "guns": 92318.0,
+        "stations": 7925
+      },
+      "affected_stations": 42,
+      "affected_order_share": 0.0182157621057847,
+      "affected_energy_share": 0.01697097385089289,
+      "metrics": {
+        "mean_energy": {
+          "unfiltered": {
+            "grids": 2556,
+            "orders": 6393968,
+            "energy_kwh": 175447478.5101,
+            "guns": 93107.0,
+            "stations": 7967
+          },
+          "filtered": {
+            "grids": 2489,
+            "orders": 6393793,
+            "energy_kwh": 175444404.3071,
+            "guns": 92779.0,
+            "stations": 7899
+          },
+          "excluded_from_display": 67,
+          "alternative_filtered": {
+            "grids": 2483,
+            "orders": 6277322,
+            "energy_kwh": 172466889.7371,
+            "guns": 91990.0,
+            "stations": 7857
+          },
+          "paired_changes": {
+            "paired_grids": 2483,
+            "baseline_only_eligible_grids": 6,
+            "alternative_only_eligible_grids": 0,
+            "median_abs_difference": 0.0,
+            "p95_abs_difference": 0.0,
+            "max_abs_difference": 11.299455544540088,
+            "rank_correlation": 0.9966871951002443,
+            "units": "kWh/session"
+          }
+        },
+        "utilization": {
+          "unfiltered": {
+            "grids": 2556,
+            "orders": 6393968,
+            "energy_kwh": 175447478.5101,
+            "guns": 93107.0,
+            "stations": 7967
+          },
+          "filtered": {
+            "grids": 2266,
+            "orders": 6348881,
+            "energy_kwh": 174276818.87309998,
+            "guns": 92211.0,
+            "stations": 7669
+          },
+          "excluded_from_display": 290,
+          "alternative_filtered": {
+            "grids": 2259,
+            "orders": 6232087,
+            "energy_kwh": 171290344.9331,
+            "guns": 91420.0,
+            "stations": 7626
+          },
+          "paired_changes": {
+            "paired_grids": 2259,
+            "baseline_only_eligible_grids": 7,
+            "alternative_only_eligible_grids": 0,
+            "median_abs_difference": 0.0,
+            "p95_abs_difference": 0.0,
+            "max_abs_difference": 0.15890885910815936,
+            "rank_correlation": 0.997310066037144,
+            "units": "fraction (multiply by 100 for percentage points)"
+          }
+        }
+      }
+    }
+  }
+}
