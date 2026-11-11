@@ -1,0 +1,98 @@
+{
+  "run_id": "20261104T011749595890Z",
+  "january_only_grids": 78,
+  "july_only_grids": 317,
+  "outside_map": [],
+  "all_paired": {
+    "grids": 2239,
+    "orders_up": 1995,
+    "util_up": 1838,
+    "both_up": 1791,
+    "orders_up_util_down": 204,
+    "orders_down_util_up": 43,
+    "both_down": 187,
+    "either_unchanged": 14,
+    "median_orders_change": 281.0,
+    "median_util_change_pp": 2.3321098105834324,
+    "spearman": 0.7237936260752788
+  },
+  "at_least_five_guns_both_months": {
+    "grids": 1987,
+    "orders_up": 1793,
+    "util_up": 1662,
+    "both_up": 1621,
+    "orders_up_util_down": 172,
+    "orders_down_util_up": 39,
+    "both_down": 149,
+    "either_unchanged": 6,
+    "median_orders_change": 399.0,
+    "median_util_change_pp": 2.5073073562408617,
+    "spearman": 0.7302391458587765
+  },
+  "largest_session_increases": {
+    "9897_4437": 48313,
+    "9917_4443": 44519,
+    "9916_4443": 41571,
+    "9909_4434": 27900,
+    "9958_4457": 27638
+  },
+  "largest_utilization_increases_pp": {
+    "9914_4433": 34.03851646505377,
+    "9919_4412": 31.037907226062472,
+    "9880_4428": 30.667409825339938,
+    "9917_4420": 29.869141685673938,
+    "9921_4438": 29.20157700349233
+  },
+  "largest_session_increases_with_utilization_decline": {
+    "9893_4445": {
+      "delta_orders": 14016,
+      "delta_util_pp": -2.338301837016135,
+      "guns_jan": 120.0,
+      "guns_jul": 202.0,
+      "orders_jan": 23276,
+      "orders_jul": 37292,
+      "duration_min_jan": 1097446.7666666666,
+      "duration_min_jul": 1636517.5
+    },
+    "9889_4413": {
+      "delta_orders": 5883,
+      "delta_util_pp": -8.44901472636681,
+      "guns_jan": 52.0,
+      "guns_jul": 1028.0,
+      "orders_jan": 4286,
+      "orders_jul": 10169,
+      "duration_min_jan": 219261.8333333333,
+      "duration_min_jul": 457391.68333333335
+    },
+    "9918_4421": {
+      "delta_orders": 5877,
+      "delta_util_pp": -5.761731697065173,
+      "guns_jan": 8.0,
+      "guns_jul": 62.0,
+      "orders_jan": 1498,
+      "orders_jul": 7375,
+      "duration_min_jan": 78660.81666666667,
+      "duration_min_jul": 450155.0333333333
+    },
+    "9916_4445": {
+      "delta_orders": 5857,
+      "delta_util_pp": -8.19286472381764,
+      "guns_jan": 53.0,
+      "guns_jul": 113.0,
+      "orders_jan": 11228,
+      "orders_jul": 17085,
+      "duration_min_jan": 404462.9166666667,
+      "duration_min_jul": 449071.15
+    },
+    "9884_4425": {
+      "delta_orders": 4955,
+      "delta_util_pp": -2.9713785385968414,
+      "guns_jan": 6.0,
+      "guns_jul": 72.0,
+      "orders_jan": 174,
+      "orders_jul": 5129,
+      "duration_min_jan": 27042.65,
+      "duration_min_jul": 229009.31666666665
+    }
+  }
+}

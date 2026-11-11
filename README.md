@@ -7,6 +7,7 @@
 - [第1至5周周报汇总](deliverables/北京市公共充电设施需求与利用的网格差异_周报汇总_连诗钰.docx)（10月5日至11月4日，连诗钰，个人项目）及[文字底稿](reports/项目周报.md)。
 - [阶段总结与后续任务](reports/新版数据阶段总结与后续任务.md)
 - [共同网格与共同站点冬夏比较](reports/winter_summer_comparison.md)
+- [订单量与利用率差值地图及散点图](reports/grid_changes.md)
 - [自然月占用时长对照](reports/calendar_month_review.md)
 - [文献依据与可视化扩展方案](reports/文献参考与可视化扩展方案.md)
 - [论文展示门槛与设施计数敏感性](reports/release_v2_filters_sensitivity.md)
@@ -42,6 +43,7 @@ python src/rebuild_release_v2.py
 python src/plot_release_v2.py
 python src/analyze_grid_sensitivity.py
 python src/compare_winter_summer.py
+python src/plot_grid_changes.py
 python src/analyze_calendar_month.py
 ```
 
