@@ -2,6 +2,16 @@
 
 研究北京市公共充电设施需求与利用的网格差异，比较2025年1月和7月。当前仅使用Figshare发布版Version 2作为正式分析主线，已完成清洗、站点关联、网格重建、设施计数敏感性、共同站点比较及可观测自然月时长对照。
 
+## 核心结果：订单增加的网格，利用率也提高了吗？
+
+在 **2,239 个共同网格**中，**1,995 个**订单量增加，**1,958 个**总充电量增加。订单增加的网格中，**1,791 个**利用率也提高，**204 个**利用率下降。固定共同站点后，**116 个**仍是订单增加、利用率下降。
+
+固定 **5,661 个**共同站点后，7 月比 1 月多 **267.2 万笔**订单。按开始小时看，**13 时**的订单增量最大；按日期类型看，**工作日**贡献最多；按明确命名的场所类型看，**公共机构**增量最大。
+
+[完整分析、典型网格和分组明细](reports/grid_followup.md) · [订单量差值地图](reports/figures/source_release2/20261104T011749595890Z/grid_changes/01-orders-change-map.png) · [总充电量差值地图](reports/figures/source_release2/20261104T011749595890Z/grid_followup/01-energy-change-map.png) · [利用率差值地图](reports/figures/source_release2/20261104T011749595890Z/grid_changes/02-utilization-change-map.png)
+
+![共同网格订单量与利用率变化散点图](reports/figures/source_release2/20261104T011749595890Z/grid_changes/03-orders-vs-utilization-change.png)
+
 ## 当前结果入口
 
 - [第1至5周周报汇总](deliverables/北京市公共充电设施需求与利用的网格差异_周报汇总_连诗钰.docx)（10月5日至11月4日，连诗钰，个人项目）及[文字底稿](reports/项目周报.md)。
@@ -44,6 +54,7 @@ python src/plot_release_v2.py
 python src/analyze_grid_sensitivity.py
 python src/compare_winter_summer.py
 python src/plot_grid_changes.py
+python src/analyze_grid_followup.py
 python src/analyze_calendar_month.py
 ```
 
