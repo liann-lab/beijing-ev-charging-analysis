@@ -5,6 +5,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.ticker import StrMethodFormatter
+import numpy as np
 import pandas as pd
 
 from analyze_grid_followup import MONTHS, ROOT, common_ids, day_types
@@ -20,7 +21,8 @@ def main():
     common = common_ids(stations, 'station_id')
     january = MONTHS[0]
     orders = pd.read_parquet(manifest.parent/f'orders_{january}_clean.parquet',
-                             columns=['station_id', 'charge_start_time'])
+                             columns=['station_id', 'charge_start_time', 'total_elec_kwh',
+                                      'total_elec_fee', 'total_service_fee'])
     dates = pd.date_range(january+'-02', january+'-27')
     workdays = dates[(day_types(dates) == 'workday') & (dates.day != 26)]
     starts = orders.charge_start_time
@@ -57,6 +59,22 @@ def main():
     plt.close(fig)
     print(f'Stations: {len(fixed)}; early: {before.sum()}; late: {after.sum()}')
     print(f'05–06 change: {change.loc[5:6].sum()}; 12–16 change: {change.loc[12:16].sum()}')
+    hour = orders.charge_start_time.dt.hour
+    orders = orders.assign(period=np.where(early, 'Jan 2–14', 'Jan 15–27'),
+                           band=np.select([hour.between(5, 6), hour.between(12, 16)],
+                                          ['05–06', '12–16'], default='Other'))
+    site = stations.loc[stations.month.eq(january)].set_index('station_id').construction_site
+    orders['site'] = orders.station_id.map(site)
+    paired_counts = orders.groupby(['station_id', 'band', 'period']).size().unstack(fill_value=0)
+    changes = (paired_counts['Jan 15–27'] - paired_counts['Jan 2–14']).unstack(fill_value=0)
+    both = changes['05–06'].lt(0) & changes['12–16'].gt(0)
+    print(f'Stations with fewer morning orders and more midday orders: {both.sum()}')
+    print(orders.groupby(['band', 'site', 'period']).size().unstack(fill_value=0).to_string())
+    fees = orders.groupby(['band', 'period'])[
+        ['total_elec_kwh', 'total_elec_fee', 'total_service_fee']].sum()
+    fees['recorded_fee_per_kwh'] = (
+        (fees.total_elec_fee + fees.total_service_fee) / fees.total_elec_kwh)
+    print(fees.to_string())
 
 
 if __name__ == '__main__':
