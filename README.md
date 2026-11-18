@@ -71,11 +71,15 @@ python src/analyze_calendar_month.py
 
 第一次看，可以按 **图 19 → 图 21 → 图 14 → 图 24** 的顺序读。先看哪里订单增长，再看利用率是否同步，接着核对固定站点后的总体结果，最后看典型网格的时段变化。
 
+**通用字段来源。** 原始订单用 `station_id` 关联站点属性，取 `construction_site`（场所）、`charging_gun_num`（配置枪数）及 `geocoding`（匿名网格编码）。重建的 `stations_monthly_clean.parquet` 中，`month` 取自订单的 `charge_start_time`，`grid_id` 来自 `geocoding`。每个站点每月汇总订单行数、`total_elec_kwh` 和 `duration_min`，分别得到 `monthly_order_count`、`monthly_total_elec_kwh` 和 `monthly_duration_min`。下面逐图说明如何从这些字段得到坐标、颜色或柱高。
+
 ### 一、基础分布（5张）
 
 **1. 月度订单量与充电量**：比较两个观察月份已实现的充电活动总量，站点覆盖范围不同。
 
 ![月度订单量与充电量](reports/figures/source_release2/20261104T011749595890Z/01-monthly-overview.png)
+
+**字段与计算。** 从 `charge_start_time` 取开始月份。每月订单行数得到订单量；对 `total_elec_kwh`（单笔电量）求和得到总充电量。
 
 **读图结论**。订单从约 213.6 万笔增至 639.4 万笔，约为 1 月的 3 倍；电量从约 5,995 万增至 1.75 亿 kWh，约为 2.93 倍。单笔电量变化见图 4。
 
@@ -83,11 +87,15 @@ python src/analyze_calendar_month.py
 
 ![开始小时日均电量](reports/figures/source_release2/20261104T011749595890Z/02-hourly-energy-profile.png)
 
+**字段与计算。** 从 `charge_start_time` 取月份和小时，按“月 × 开始小时”对 `total_elec_kwh` 求和，再除以该月天数（两月均为 31 天）。图中以 MWh 表示，1 MWh = 1,000 kWh。
+
 **读图结论**。两月最高点都在 23 时，7 月在 13–15 时还有一波高值。每个点按订单开始时刻归集整笔电量，不能据此判断哪一小时的实际用电负荷最高。
 
 **3. 场所订单占比**：比较不同站点场所类别的订单构成。
 
 ![场所订单占比](reports/figures/source_release2/20261104T011749595890Z/03-site-session-share.png)
+
+**字段与计算。** 按开始月份和站点场所 `construction_site` 统计订单行数，再除以该月全部订单行数。图中展示两个月合计订单数最多的 10 类。
 
 **读图结论**。“其他”两月都占最大份额，7 月约 42%；公共机构从约 24% 降至 22%。占比下降时，绝对订单量仍可能增加。
 
@@ -95,11 +103,15 @@ python src/analyze_calendar_month.py
 
 ![单次充电电量分布](reports/figures/source_release2/20261104T011749595890Z/04-session-energy-distribution.png)
 
+**字段与计算。** 每月从各批订单抽取 `total_elec_kwh`，绘图时保留正值并从小到大排序。横轴是单笔电量（对数尺度），纵轴是排序位置 ÷ 样本笔数 × 100%。
+
 **读图结论**。横轴选一个电量，纵轴就是不超过这一电量的样本订单比例。两条曲线整体接近，7 月的样本中位数略低。该图只用正电量样本。
 
 **5. 站点月利用率分布**：比较从清洗订单重建的站点利用率分布。
 
 ![站点利用率分布](reports/figures/source_release2/20261104T011749595890Z/05-utilization-distribution.png)
+
+**字段与计算。** 按“开始月 × `station_id`”汇总 `duration_min` 得到 `monthly_duration_min`，再除以（该站的 `charging_gun_num` × 当月分钟数），得到 `monthly_gun_utilization_rate`。按月画站点利用率的密度直方图。
 
 **读图结论**。横轴 0.10 表示 10%，纵轴是密度。两月都集中在低利用率区间，1 月在最靠近零的区间更集中。这里每个站点各计一次，整体枪时比例看图 14。
 
@@ -111,17 +123,23 @@ python src/analyze_calendar_month.py
 
 ![网格订单量](reports/figures/source_release2/20261104T011749595890Z/spatial/01-grid-orders.png)
 
+**字段与计算。** 按“`month` × `grid_id`”加总各站的 `monthly_order_count`。将 `grid_id` 拆成 X、Y 坐标，以订单总数映射对数色标。
+
 **读图结论**。每个方块是一格，按同一色标比较两个月的总订单。主坐标簇中高值较密集，7 月有订单的网格更多。同一格增量见图 19。
 
 **7. 网格充电量空间分布**
 
 ![网格充电量](reports/figures/source_release2/20261104T011749595890Z/spatial/02-grid-energy.png)
 
+**字段与计算。** 与图 6 使用相同分组和坐标，改为加总各站的 `monthly_total_elec_kwh`，以总 kWh 映射对数色标。
+
 **读图结论**。主坐标簇内有较多高电量网格。颜色反映总 kWh，高值可能来自订单多或单笔充电量大，可与图 6 一起判断。
 
 **8. 网格利用率空间分布**：两个月使用相同分段色标，便于比较低值区间。
 
 ![新版网格利用率](reports/figures/source_release2/20261104T011749595890Z/spatial/03-grid-utilization.png)
+
+**字段与计算。** 按“`month` × `grid_id`”将各站 `monthly_duration_min` 求和，再除以（同组 `charging_gun_num` 之和 × 当月分钟数）。结果按利用率区间着色。
 
 **读图结论**。看相同位置的方块是否跨过同一个利用率分档。7 月同时存在高档和低档网格。订单多的网格若枪数也多，利用率仍可能偏低。
 
@@ -141,11 +159,15 @@ python src/analyze_calendar_month.py
 
 ![平均单次电量展示筛选](reports/figures/source_release2/20261104T011749595890Z/paper_filters_sensitivity/mean_energy_display_filter.png)
 
+**字段与计算。** 每个“`month` × `grid_id`”用各站 `monthly_total_elec_kwh` 的合计除以 `monthly_order_count` 的合计。筛选图仅保留合计订单数至少为 5 的格子，公式相同。
+
 **读图结论**。至少 5 笔的门槛使 1 月从 2,317 格剩 2,175 格，7 月从 2,556 格剩 2,489 格。灰叉表示订单数低于展示门槛。
 
 **10. 利用率的低样本筛选对照**：筛选前后比较，门槛为至少5把枪。
 
 ![利用率展示筛选](reports/figures/source_release2/20261104T011749595890Z/paper_filters_sensitivity/utilization_display_filter.png)
+
+**字段与计算。** 沿用图 8 的利用率公式，筛选图仅保留网格内 `charging_gun_num` 合计至少为 5 的格子。
 
 **读图结论**。至少 5 把枪的门槛使 1 月少显示 275 格，7 月少显示 290 格。灰叉对应的是设施规模较小的网格，单看叉号无法判断利用率高低。
 
@@ -153,11 +175,15 @@ python src/analyze_calendar_month.py
 
 ![平均电量设施计数敏感性](reports/figures/source_release2/20261104T011749595890Z/paper_filters_sensitivity/mean_energy_facility_sensitivity.png)
 
+**字段与计算。** 比较使用发布值的基准方案与排除计数不一致站点的方案。桩数检查 `piles_num` 是否等于 `dc_piles_num + ac_piles_num`；枪数检查 `charging_gun_num` 是否等于 `dc_charging_gun_num + ac_charging_gun_num`。任一不等，就在对照方案移除该 `station_id`，按图 9 的公式重算。
+
 **读图结论**。黑圈表示移除有标记的站点后，计入的订单组合使均值变化。共同达标网格中最大绝对变化约为 1 月 14.87 kWh、7 月 11.30 kWh，个案需要回查。
 
 **12. 利用率的设施计数敏感性**：排除站点同时改变时长和枪数，不据此判定哪一项原始计数正确。
 
 ![利用率设施计数敏感性](reports/figures/source_release2/20261104T011749595890Z/paper_filters_sensitivity/utilization_facility_sensitivity.png)
+
+**字段与计算。** 沿用图 11 的站点排除规则，分别重算每格 `monthly_duration_min` 和 `charging_gun_num` 的合计，再用图 8 的公式算利用率。两种方案各自要求至少 5 把枪。
 
 **读图结论**。大部分共同达标网格变化很小，7 月利用率排名相关仍约 0.997，但某些网格的差值可达 15.89 个百分点。整体排序和局部案例应分别判断。
 
@@ -167,11 +193,15 @@ python src/analyze_calendar_month.py
 
 ![冬夏配对利用率](reports/figures/source_release2/20261104T011749595890Z/winter_summer/01-paired-utilization.png)
 
+**字段与计算。** 按 `grid_id` 配对两月利用率，把 1 月值放横轴、7 月值放纵轴。每个面板先确定站点样本，再按图 8 汇总；两个月的 `charging_gun_num` 合计都须至少为 5。固定站点时取两月 `station_id` 的交集。
+
 **读图结论**。两月均至少有 5 把枪时，共同网格口径下约 83.6% 的点位于对角线上方，固定共同站点后约为 85.0%。下排是低值区放大图。
 
 **14. 不同样本范围的比较**：比较全部观测站点、共同网格、共同站点和计数一致共同站点的汇总利用率及每枪日均订单。
 
 ![样本范围对照](reports/figures/source_release2/20261104T011749595890Z/winter_summer/02-coverage-comparison.png)
+
+**字段与计算。** 用 `grid_id` 的两月交集限制共同网格，用 `station_id` 的交集限制共同站点，另对照全样本及计数一致的共同站点。各组用 `monthly_duration_min` 合计 ÷（枪数合计 × 当月分钟数）计算汇总利用率，用 `monthly_order_count` 合计 ÷（枪数合计 × 当月天数）计算每枪日均订单。
 
 **读图结论**。四种样本口径下，7 月汇总利用率和每枪日均订单都更高。固定共同站点后，利用率从 4.56% 升至 8.98%，每枪日均订单从约 0.97 增至 2.26 笔。
 
@@ -185,11 +215,15 @@ python src/analyze_calendar_month.py
 
 ![自然月时长对照](reports/figures/source_release2/20261104T011749595890Z/calendar_month/20261104T075413371066Z/01-calendar-month-comparison.png)
 
+**字段与计算。** 固定共同 `station_id` 和对应 `charging_gun_num`。依次比较三种时长分子：`duration_min` 整笔归开始月、`charge_end_time - charge_start_time` 整笔归开始月、起止区间与各自然月的交集分钟数。三者都除以相同的配置枪时；右图按 `grid_id` 画拆分前后的差值分布。
+
 **读图结论**。左图中，拆分已有跨月时长使 1 月汇总利用率变动 −0.014 个百分点，7 月变动 +0.033 个百分点。右图展示网格差值分布。总体上升在这个对照下保持，相邻月份记录仍有限。
 
 **16. 月界时长流入流出**：展示现有跨月会话在相邻月份之间转移的会话小时数，不代表完整的相邻月活动。
 
 ![月界时长流入流出](reports/figures/source_release2/20261104T011749595890Z/calendar_month/20261104T075413371066Z/02-boundary-transfers.png)
+
+**字段与计算。** 对每笔订单用 `charge_start_time` 和 `charge_end_time` 算出落入各自然月的分钟数。落到开始月之后的时长，从开始月记作转出，在对应月份记作转入。按月汇总并换成小时。
 
 **读图结论**。正柱为转入、负柱为转出。约 7,165 个会话小时从 1 月转到 2 月，约 23,465 小时从 6 月转到 7 月。这些是观测到的跨月片段。
 
@@ -197,11 +231,15 @@ python src/analyze_calendar_month.py
 
 ![星期小时到达热图](reports/figures/source_release2/20261104T011749595890Z/calendar_month/20261104T075413371066Z/03-weekday-hour-arrivals.png)
 
+**字段与计算。** 用共同 `station_id` 对应的订单，从 `charge_start_time` 取月份、星期几和小时，按三者组合数订单行。每格用笔数 ÷ 对应星期几在当月出现的天数 ÷ 共同站点 `charging_gun_num` 合计 × 100。
+
 **读图结论**。每格颜色代表每 100 把枪在对应星期和小时的到达次数。最深的格子从 1 月周五 23 时变为 7 月周五 13 时。图 23 则用未按星期和枪数标准化的订单增量。
 
 **18. 网格集中度曲线**：比较固定共同站点网格的枪数、订单和电量集中程度，各变量单独排序。
 
 ![网格集中度曲线](reports/figures/source_release2/20261104T011749595890Z/calendar_month/20261104T075413371066Z/04-grid-concentration.png)
+
+**字段与计算。** 在共同站点样本按 `grid_id` 汇总 `charging_gun_num`、按开始月计的订单行数和 `total_elec_kwh`。每个指标单独从小到大排序，横轴累计网格占比，纵轴累计指标占比，再计算基尼系数。
 
 **读图结论**。曲线离对角线越远，活动越集中于少数网格。固定站点后，枪数的基尼系数约 0.556，订单由 0.694 升至 0.721，电量由 0.705 升至 0.732。三条线各自排序，同一横坐标可能对应不同网格。
 
@@ -215,15 +253,21 @@ python src/analyze_calendar_month.py
 
 ![订单量差值地图](reports/figures/source_release2/20261104T011749595890Z/grid_changes/01-orders-change-map.png)
 
+**字段与计算。** 按图 6 求两月网格订单量，用 `grid_id` 取两月都有订单的网格，以 7 月的 `monthly_order_count` 网格合计减去 1 月合计。
+
 **读图结论**。约 89% 的共同网格订单增加。深红表示绝对增量大，基数较小的网格即使颜色较浅，也可能有很高的相对增长率。
 
 **20. 利用率差值地图**。色标单位为百分点，例如利用率从 8% 到 12% 对应 +4 个百分点。共有 1,838 个网格利用率提高。同一网格两个月纳入统计的站点可能不同。
 
 ![利用率差值地图](reports/figures/source_release2/20261104T011749595890Z/grid_changes/02-utilization-change-map.png)
 
+**字段与计算。** 按图 8 求每格两个月的利用率，用 `grid_id` 配对后计算（7 月利用率 − 1 月利用率）× 100，将小数比例差换成百分点。
+
 **读图结论**。逐格变化中位数为 +2.33 个百分点，部分位置呈蓝色。固定站点后有 135 格升降方向反转，判断某个网格时要核对纳入统计的站点。
 
 **21. 订单量与利用率变化散点图**。横轴是订单量差值，纵轴是利用率差值；每个点代表一个网格。右上角是两项都增加的 1,791 个网格，右下角紫色点是订单增加但利用率下降的 204 个网格。横轴在零附近为线性，远离零后按对称对数尺度显示。[查看首页散点图](reports/figures/source_release2/20261104T011749595890Z/grid_changes/03-orders-vs-utilization-change.png)
+
+**字段与计算。** 按 `grid_id` 将图 19 的订单量差值与图 20 的利用率百分点差值放到同一点的横轴和纵轴，并根据两个差值的正负着色。
 
 **读图结论**。约九成订单增加的网格同时提高了利用率。右下角的 204 格中，有 116 格固定同一批站点后仍呈现这种不同步，可进一步检查单次时长的变化。
 
@@ -231,17 +275,23 @@ python src/analyze_calendar_month.py
 
 ![总充电量差值地图](reports/figures/source_release2/20261104T011749595890Z/grid_followup/01-energy-change-map.png)
 
+**字段与计算。** 按图 7 对 `monthly_total_elec_kwh` 求网格月合计，用 `grid_id` 配对后算 7 月减 1 月。
+
 **读图结论**。总电量增量最大的三个网格也位列订单增量前三。两项指标在增长最明显的几个网格一致，单次充电量需另看。
 
 **23. 共同站点逐小时订单增量图**。固定 5,661 个共同站点，按会话开始小时统计订单增量。每根柱子表示该小时段在两个月的总订单差值，13 时增量最大（+209,453 笔）。
 
 ![共同站点逐小时订单增量](reports/figures/source_release2/20261104T011749595890Z/grid_followup/02-hourly-contribution.png)
 
+**字段与计算。** 先用 `station_id` 筛出共同站点的订单，再由 `charge_start_time` 取开始月和小时，统计各小时的订单行数并算 7 月减 1 月。
+
 **读图结论**。24 个开始小时的订单都增加，13 时贡献约 7.8% 的净增订单。开始时段增量与充电枪在该时段的占用程度是不同指标。
 
 **24. 典型网格订单开始时段对照图**。五个面板各代表一个典型网格，曲线显示每小时订单占该网格当月订单的比例。例如，`9889_4413` 的占比峰值从 1 月 23 时移到 7 月 13 时。案例采用各月观测站点，固定站点和设备计数敏感性对照见报告。
 
 ![典型网格订单开始时段对照](reports/figures/source_release2/20261104T011749595890Z/grid_followup/03-case-hour-profiles.png)
+
+**字段与计算。** 按 `station_id` 把订单关联到站点的 `geocoding`，选出 5 个案例网格。用 `charge_start_time` 将订单按月和开始小时计数；每条曲线的值为该小时笔数 ÷ 同格当月订单总数 × 100%。
 
 **读图结论**。以 9889_4413 为例，最高单小时占比从 15.82% 降至 8.23%，峰值也提前。曲线用各自当月总订单归一化，占比下降时绝对订单数仍可能增加。
 
