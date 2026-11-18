@@ -60,6 +60,54 @@ def plot_fee_comparison(raw_rates, matched_rates, coverage, output):
     plt.close(fig)
 
 
+def plot_site_daily(orders, workdays, output):
+    sites = {
+        '公共机构': 'Public institutions',
+        '其他': 'Other',
+        '大型建筑配建停车场': 'Large-building parking',
+        '写字楼': 'Office buildings',
+        '居住区': 'Residential areas',
+    }
+    orders = orders.assign(hour=orders.charge_start_time.dt.hour)
+    groups = orders.loc[orders.site.isin(sites) & orders.band.isin(['05–06', '12–16'])]
+    station_hours = groups.groupby(['site', 'date', 'band', 'station_id', 'hour']).size()
+    daily = station_hours.groupby(level=['site', 'date', 'band']).agg(['sum', 'size'])
+    fig, axes = plt.subplots(len(sites), 3, figsize=(13, 10), sharex=True, layout='constrained')
+    for row, (site, name) in enumerate(sites.items()):
+        site_days = daily.loc[site]
+        morning = site_days.xs('05–06', level='band').reindex(workdays, fill_value=0)
+        midday = site_days.xs('12–16', level='band').reindex(workdays, fill_value=0)
+        per_active = midday['sum'] / midday['size'].where(midday['size'].gt(0))
+        ax1, ax2, ax3 = axes[row]
+        ax1.plot(workdays.day, morning['sum'], 'o-', color='#24628b', markersize=3,
+                 label='05:00–06:59')
+        for ax, values in zip((ax1, ax2, ax3), (midday['sum'], midday['size'], per_active)):
+            ax.plot(workdays.day, values, 'o-', color='#b65321', markersize=3,
+                    label='12:00–16:59')
+            ax.axvline(15, color='#666666', linestyle='--', linewidth=.9)
+            ax.grid(axis='y', alpha=.2)
+            ax.set_ylim(bottom=0)
+            ax.yaxis.set_major_formatter(StrMethodFormatter('{x:,.0f}' if ax != ax3 else '{x:.1f}'))
+        ax1.set_ylabel(name, fontsize=9)
+        for day in (14, 15):
+            values = midday.loc[workdays[workdays.day == day][0]]
+            print(name, day, f'orders={values["sum"]}, station-hours={values["size"]}, '
+                  f'orders per active station-hour={values["sum"]/values["size"]:.2f}')
+    for ax, title in zip(axes[0], ('Order count by start time',
+                                  'Midday station-hours with orders',
+                                  'Midday orders per active station-hour')):
+        ax.set_title(title, fontsize=11)
+    axes[0, 0].legend(frameon=False, fontsize=8)
+    for ax in axes[-1]:
+        ax.set(xlabel='January day (ordinary workdays)', xticks=[2, 7, 10, 15, 20, 24, 27])
+    fig.suptitle('January charging by site category | same stations observed on all 18 workdays',
+                 fontweight='bold')
+    fig.supxlabel('Dashed line: January 15. Each active station-hour has at least one recorded start. '
+                  'Vertical scales vary by panel.', fontsize=9)
+    fig.savefig(output/'08-january-daily-site-breakdown.png', dpi=180)
+    plt.close(fig)
+
+
 def main():
     manifests = sorted((ROOT/'data/processed').glob('source_release2_clean1_*/cleaning_manifest.json'))
     if not manifests:
@@ -114,6 +162,7 @@ def main():
                                           ['05–06', '12–16'], default='Other'))
     site = stations.loc[stations.month.eq(january)].set_index('station_id').construction_site
     orders['site'] = orders.station_id.map(site)
+    plot_site_daily(orders, workdays, output)
     paired_counts = orders.groupby(['station_id', 'band', 'period']).size().unstack(fill_value=0)
     changes = (paired_counts['Jan 15–27'] - paired_counts['Jan 2–14']).unstack(fill_value=0)
     both = changes['05–06'].lt(0) & changes['12–16'].gt(0)
