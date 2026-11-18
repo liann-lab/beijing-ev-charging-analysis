@@ -1,14 +1,63 @@
 """Compare January start-hour counts at stations observed on all 18 workdays."""
 import json
+from pathlib import Path
 
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from matplotlib.font_manager import FontProperties, findfont
 from matplotlib.ticker import StrMethodFormatter
 import numpy as np
 import pandas as pd
 
 from analyze_grid_followup import MONTHS, ROOT, common_ids, day_types
+
+
+def plot_fee_comparison(raw_rates, matched_rates, coverage, output):
+    windows_font = Path('C:/Windows/Fonts/simhei.ttf')
+    font_path = windows_font if windows_font.is_file() else findfont(
+        FontProperties(family=['Noto Sans CJK SC', 'Microsoft YaHei', 'SimHei']),
+        fallback_to_default=False)
+    font = FontProperties(fname=font_path)
+    fig = plt.figure(figsize=(13, 6.2), facecolor='white')
+    grid = fig.add_gridspec(2, 2, width_ratios=[1.12, 1], left=.08, right=.97,
+                           top=.76, bottom=.14, hspace=.65, wspace=.17)
+    labels = ['05:00–06:59', '12:00–16:59']
+    for row, (raw, fixed, label) in enumerate(zip(raw_rates, matched_rates, labels)):
+        ax = fig.add_subplot(grid[row, 0])
+        for x, (a, b) in enumerate(zip(raw, fixed)):
+            ax.plot([x, x], [a, b], color='#a6b5c1', linewidth=2)
+            ax.scatter(x, a, color='#b65321', s=55, zorder=3)
+            ax.scatter(x, b, color='#24628b', s=45, marker='D', zorder=4)
+            ax.annotate(f'{a:.3f}', (x, a), xytext=(-10, 0), textcoords='offset points',
+                        ha='right', va='center', color='#943d14', fontsize=10)
+            ax.annotate(f'{b:.3f}', (x, b), xytext=(10, 0), textcoords='offset points',
+                        ha='left', va='center', color='#194d73', fontsize=10)
+        ax.set(title=label, xlim=(-.45, 1.45), ylim=(.6, 2.08),
+               xticks=[0, 1], xticklabels=['1/2–1/14', '1/15–1/27'])
+        ax.set_ylabel('元/kWh', fontproperties=font)
+        ax.grid(axis='y', alpha=.2)
+        ax.spines[['top', 'right']].set_visible(False)
+    notes = fig.add_subplot(grid[:, 1])
+    notes.set_axis_off()
+    blocks = [
+        ('为什么做这个对照？', '图 27 发现清晨订单减少、午后增加。\n汇总收费恰好一升一降，因此核查：\n换成同一批桩和开始小时，差异还在吗？'),
+        ('怎么算？', '橙点：电费和服务费之和 ÷ 电量之和。\n蓝菱形：两段都出现的同站、同桩、\n同开始小时组合，按前段电量统一加权。'),
+        ('结果与限制', '配对后，清晨的涨幅消失，午后降幅缩小。\n'
+         f'午后配对覆盖前段 {coverage[1][0]:.1%}、后段 {coverage[1][1]:.1%}\n'
+         '的正电量订单。整笔收费无法还原分时\n价表，现有结果不足以确认调价。'),
+    ]
+    for y, (title, body) in zip([1, .66, .32], blocks):
+        notes.text(0, y, title, fontproperties=font, fontsize=14, weight='bold', va='top')
+        notes.text(0, y-.075, body, fontproperties=font, fontsize=11, va='top', linespacing=1.55)
+    fig.text(.08, .94, '1 月收费差异：汇总比较与同桩同小时对照',
+             fontproperties=font, fontsize=21, weight='bold')
+    fig.text(.08, .875, '固定 1,846 个站点，每段各 9 个普通工作日。收费按会话开始时段归组。',
+             fontproperties=font, fontsize=12)
+    fig.text(.08, .82, '● 汇总收费     ◆ 固定桩、小时及权重后的收费',
+             fontproperties=font, fontsize=11)
+    fig.savefig(output/'07-january-matched-fees.png', dpi=180)
+    plt.close(fig)
 
 
 def main():
@@ -82,6 +131,7 @@ def main():
     equipment['rate'] = equipment.fee / equipment.energy
     matched = equipment[['sessions', 'energy', 'rate']].unstack('period').dropna()
     first, second = 'Jan 2–14', 'Jan 15–27'
+    raw_rates, matched_rates, coverage = [], [], []
     for hours in (range(5, 7), range(12, 17)):
         pairs = matched.loc[matched.index.get_level_values('hour').isin(hours)]
         totals = positive.loc[positive.hour.isin(hours)].groupby('period').size()
@@ -90,9 +140,15 @@ def main():
             weights = sample.energy[first]
             rates = sample.rate.mul(weights, axis=0).sum() / weights.sum()
             median_change = (sample.rate[second] - sample.rate[first]).median()
+            if minimum == 1:
+                band = '05–06' if hours.start == 5 else '12–16'
+                raw_rates.append(fees.loc[band, 'recorded_fee_per_kwh'].reindex([first, second]))
+                matched_rates.append(rates.reindex([first, second]))
+                coverage.append((sample.sessions.sum()/totals).reindex([first, second]).tolist())
             print(f'Hours {hours.start}–{hours.stop-1}, minimum {minimum}: {len(sample)} pairs; '
                   f'fixed-weight rates {rates.to_dict()}; median change {median_change:.6f}; '
                   f'order coverage {(sample.sessions.sum()/totals).to_dict()}')
+    plot_fee_comparison(raw_rates, matched_rates, coverage, output)
 
 
 if __name__ == '__main__':
