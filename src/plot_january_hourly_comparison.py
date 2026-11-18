@@ -21,7 +21,7 @@ def main():
     common = common_ids(stations, 'station_id')
     january = MONTHS[0]
     orders = pd.read_parquet(manifest.parent/f'orders_{january}_clean.parquet',
-                             columns=['station_id', 'charge_start_time', 'total_elec_kwh',
+                             columns=['station_id', 'pile_id', 'charge_start_time', 'total_elec_kwh',
                                       'total_elec_fee', 'total_service_fee'])
     dates = pd.date_range(january+'-02', january+'-27')
     workdays = dates[(day_types(dates) == 'workday') & (dates.day != 26)]
@@ -75,6 +75,24 @@ def main():
     fees['recorded_fee_per_kwh'] = (
         (fees.total_elec_fee + fees.total_service_fee) / fees.total_elec_kwh)
     print(fees.to_string())
+    positive = orders.loc[orders.total_elec_kwh.gt(0)].assign(
+        hour=hour, fee=orders.total_elec_fee + orders.total_service_fee)
+    equipment = positive.groupby(['station_id', 'pile_id', 'hour', 'period']).agg(
+        sessions=('fee', 'size'), fee=('fee', 'sum'), energy=('total_elec_kwh', 'sum'))
+    equipment['rate'] = equipment.fee / equipment.energy
+    matched = equipment[['sessions', 'energy', 'rate']].unstack('period').dropna()
+    first, second = 'Jan 2–14', 'Jan 15–27'
+    for hours in (range(5, 7), range(12, 17)):
+        pairs = matched.loc[matched.index.get_level_values('hour').isin(hours)]
+        totals = positive.loc[positive.hour.isin(hours)].groupby('period').size()
+        for minimum in (1, 5):
+            sample = pairs.loc[pairs.sessions.min(axis=1).ge(minimum)]
+            weights = sample.energy[first]
+            rates = sample.rate.mul(weights, axis=0).sum() / weights.sum()
+            median_change = (sample.rate[second] - sample.rate[first]).median()
+            print(f'Hours {hours.start}–{hours.stop-1}, minimum {minimum}: {len(sample)} pairs; '
+                  f'fixed-weight rates {rates.to_dict()}; median change {median_change:.6f}; '
+                  f'order coverage {(sample.sessions.sum()/totals).to_dict()}')
 
 
 if __name__ == '__main__':
