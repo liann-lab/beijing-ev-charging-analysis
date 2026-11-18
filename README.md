@@ -58,6 +58,7 @@ python src/plot_grid_changes.py
 python src/analyze_grid_followup.py
 python src/plot_common_station_daily.py
 python src/plot_january_hourly_comparison.py
+python src/analyze_workday_sensitivity.py
 python src/analyze_calendar_month.py
 ```
 
@@ -247,7 +248,7 @@ python src/analyze_calendar_month.py
 
 自然月对照只拆分会话时长，不分摊电量或费用。1月文件可延续至2月，7月文件结束却止于7月底，且相邻月份边界会话未必完整，因此当前不是严格完整自然月利用率。星期×小时热图表示到达次数，不是电力负荷；Lorenz曲线描述网格集中程度，不代表人口公平性。
 
-### 六、共同网格差值、订单增量与收费核查（11张）
+### 六、共同网格差值、订单增量与收费核查（12张）
 
 差值统一为 **2025 年 7 月减 1 月**。图 19–22 使用两个月都有清洗后订单的 **2,239 个网格**。三张地图以红色表示增加、蓝色表示减少，接近白色表示变化较小；空白处在配对样本之外。坐标为匿名网格编码，颜色使用对称对数尺度，读数以各图色标为准。
 
@@ -336,6 +337,14 @@ python src/analyze_calendar_month.py
 **字段与计算。** 固定图 27 的 1,846 个站点，以 `station_id` 关联 `construction_site`，从 `charge_start_time` 提取日期和小时。同一站在某天某小时至少有一笔订单，就计为一个有订单的站点小时。右列用午间到下午订单量除以有订单的站点小时数。
 
 **读图结论。** 展示的五类场所在 1 月 15 日同时出现午间到下午订单增加。有订单的站点小时数和平均接单数也都增加。以公共机构为例，站点小时从 89 增至 1,680，平均接单从 3.36 笔增至 3.61 笔，变化主要体现在更多站点小时出现记录。多个场所同步变化，使该日期值得向发布方核对上报或覆盖规则。图中没有逐日营业与平台上报记录，无法判定跳变原因。
+
+**30. 1 月基准日期敏感性对照**。每个点是三个窗口都有订单的一个网格。横轴是 7 月减 1 月前段的利用率差值，纵轴是 7 月减 1 月后段的差值。橙色表示换基准后升降方向反转。
+
+![1 月基准日期敏感性对照](reports/figures/source_release2/20261104T011749595890Z/grid_followup/09-january-baseline-sensitivity.png)
+
+**字段与计算。** 固定 5,661 个共同 `station_id`，通过 `grid_id` 汇总。用 `charge_start_time` 筛选各窗口的普通工作日，订单数除以天数；`duration_min` 合计除以（固定 `charging_gun_num` 合计 × 窗口天数 × 1,440）计算利用率。图中用百分点表示两段利用率之差。
+
+**读图结论。** 7 月汇总利用率为 9.15%，高于 1 月前段的 3.30% 和后段的 6.51%。但在 1,850 个可同比网格中，445 个更换基准后方向反转；两种对照都有订单增加、利用率下降的网格，只有 6 个在两种对照下都属于这一类。
 
 [完整分析报告及日期、场所分组结果](reports/grid_followup.md)
 
