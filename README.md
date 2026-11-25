@@ -14,6 +14,8 @@
 
 ## 当前结果入口
 
+- [深圳 UrbanEV 解压与首轮字段核查](reports/urbanev_initial_review.md)
+
 - [项目周报文字版（已更新至第7周）](reports/项目周报.md)
 - [第1至5周周报汇总](deliverables/北京市公共充电设施需求与利用的网格差异_周报汇总_连诗钰.docx)（10月5日至11月4日，连诗钰，个人项目）及[文字底稿](reports/项目周报.md)。
 - [阶段总结与后续任务](reports/新版数据阶段总结与后续任务.md)
