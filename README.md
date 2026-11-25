@@ -350,6 +350,16 @@ python src/analyze_calendar_month.py
 
 [完整分析报告及日期、场所分组结果](reports/grid_followup.md)
 
+### 深圳 UrbanEV 初步图表
+
+[字段核查、负值问题和两张图的解释](reports/urbanev_initial_review.md)
+
+![深圳站点分布](reports/figures/urbanev/01-station-distribution.png)
+
+![深圳分月日内占用率](reports/figures/urbanev/02-monthly-hourly-occupancy.png)
+
+空间图使用站点经纬度及配置桩数；日内图用busy合计除以busy与idle合计，并区分自然星期。深圳的处理后duration或volume有11,935行出现负值，当前占用曲线仅采用忙闲状态。日期尚未调整节假日，深圳与北京指标的直接数值比较仍需统一口径。
+
 ### 七、下一步分析（2026年11月25日更新）
 
 1. **优先画网格稳定性地图。** 沿用图30的1,850个可比网格，按匿名坐标标出两种基准下7月利用率均更高、均更低和升降方向反转的网格。单列持平情形。观察445个反转网格是否集中，找到结论较稳定的位置。
