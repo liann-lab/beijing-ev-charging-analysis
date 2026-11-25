@@ -90,6 +90,58 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     fig.savefig(output/'09-january-baseline-sensitivity.png', dpi=180)
     plt.close(fig)
+    classes = pd.Series(np.select(
+        [x.gt(1e-9)&y.gt(1e-9), x.lt(-1e-9)&y.lt(-1e-9), flips],
+        ['Higher in both', 'Lower in both', 'Reversal'], default='Includes tie'), index=compared.index)
+    xy = compared.index.to_series().str.split('_', expand=True).astype(int)
+    fig, ax = plt.subplots(figsize=(8, 7), layout='constrained')
+    for label, color in [('Higher in both', '#b5462e'), ('Lower in both', '#24628b'),
+                         ('Reversal', '#c89a27'), ('Includes tie', '#888888')]:
+        mask = classes.eq(label)
+        ax.scatter(xy.loc[mask, 0], xy.loc[mask, 1], s=8, marker='s', color=color,
+                   label=f'{label} ({mask.sum():,})', linewidths=0)
+    ax.set(xlabel='Anonymized grid X', ylabel='Anonymized grid Y', aspect='equal',
+           title='July utilization direction under two January workday baselines')
+    ax.legend(frameon=False, fontsize=8)
+    fig.savefig(output/'10-grid-stability-map.png', dpi=180)
+    plt.close(fig)
+    bad = fixed.groupby('grid_id')[['flag_gun_component_mismatch',
+                                    'flag_pile_component_mismatch']].any().any(axis=1)
+    enough = pd.DataFrame(order_counts).min(axis=1).ge(30).reindex(compared.index)
+    eligible = enough & ~bad.reindex(compared.index)
+    stable = discordant['early'] & discordant['late'] & eligible
+    reversal = flips & eligible
+    if not stable.any() or not reversal.any():
+        raise ValueError('No sufficiently observed consistent-capacity case')
+    case_ids = [compared.loc[stable, 'daily_delta_late'].idxmax(),
+                (x-y).abs().loc[reversal].idxmax()]
+    fig, axes = plt.subplots(2, 3, figsize=(12, 6), layout='constrained')
+    result = {'classes': classes.value_counts().to_dict(), 'cases': {}}
+    for row, grid_id in enumerate(case_ids):
+        values = totals.xs(grid_id, level='grid_id').reindex(['early', 'late', 'july'])
+        guns = capacity.loc[grid_id]
+        sessions = values.orders.to_numpy()
+        days = np.array([day_counts[k] for k in values.index])
+        means = values.minutes.to_numpy()/sessions
+        rates = sessions/days/guns
+        util = rates*means/1440*100
+        result['cases'][grid_id] = dict(guns=float(guns), orders=sessions.tolist(),
+                                       sessions_per_gun_day=rates.tolist(),
+                                       mean_minutes=means.tolist(), utilization_percent=util.tolist())
+        for col, (numbers, title) in enumerate(zip([rates, means, util],
+                ['Sessions / gun / day', 'Minutes / session', 'Utilization (%)'])):
+            ax = axes[row, col]
+            bars = ax.bar(['Jan early', 'Jan late', 'July'], numbers,
+                          color=['#8096a9', '#24628b', '#b5462e'])
+            ax.bar_label(bars, fmt='%.2f', fontsize=8)
+            ax.set(title=f'{grid_id} | {title}', ylim=(0, max(numbers)*1.22))
+    fig.suptitle('Fixed-capacity cases | utilization (%) = sessions/gun/day × minutes/session ÷ 1,440 × 100')
+    fig.savefig(output/'11-grid-case-decomposition.png', dpi=180)
+    plt.close(fig)
+    local = ROOT/'data/processed/grid_stability'
+    local.mkdir(parents=True, exist_ok=True)
+    (local/'case_summary.json').write_text(json.dumps(result, indent=2)+'\n', encoding='utf-8')
+    print(json.dumps(result, indent=2))
 
 
 if __name__ == '__main__':
